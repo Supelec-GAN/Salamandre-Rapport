@@ -30,6 +30,8 @@ Description des outils mis en place pour le projet et de certains choix techniqu
 
 
 
+
+
 \section{Application au problème du XOR}
 
 \paragraph*{}
@@ -39,7 +41,29 @@ Le problème du XOR est l'un des plus classiques car il apporte de nombreuses di
 L'objectif du XOR est de séparer le plan complexe en quatres cadrants, $(x >0, y > 0)$, $ (x>0, y<0)$, $ (x<0, y>0)$ et $ (x>0, y<0) $. On restreint le plan à $[-1;1]^2$. Les sorties attendues par le réseau de neurones sont 1 pour les points tel que $x*y > 0 $ et -1 pour les points tels que $x*y<0$. \\
 Le premier intérêt de ce problème est qu'il est non linéaire, c'est à dire que l'on ne peut pas tracer une droite séparant le plan en 2 qui répond à celui-ci.\\
 
-C'est en se basant sur la résolution du XOR que nous avons construits notre structure de réseau et vérifié la cohérence de notre code. La littérature propose comme réseau le plus simple pour ce problème une couche cachée de 2 neurones, avec 2 entrées ($x$ et $y$) et 1 sortie dans $[-1, 1]$
+C'est en se basant sur la résolution du XOR que nous avons construits notre structure de réseau et vérifié la cohérence de notre code. La littérature propose comme réseau le plus simple pour ce problème une couche cachée de 2 neurones, avec 2 entrées ($x$ et $y$) et 1 sortie dans $[-1, 1]$. Nous avons étudié également quelques autres formes de réseaux pour comparer les résultats.
+
+\paragraph{Notion de résultats} % (fold)
+\label{par:notion_de_resultats}
+La notion de résultats nécéssite d'être correctement défini afin de pouvoir être interprété correctement, et surtout comparé à d'autres résultats obtenus par nous même ou par d'autres personnes. \\
+Dans le cas des ses apprentissages, le réseau classe les objets que l'on donne en entrée. Généralement l'on défini le résultat par rapport à un pourcentage de succès dans cette classification. Pour l'obtenir on commence par définir une erreur relative, c'est à dire une distance entre la sortie cible et la sortie obtenue. Puis l'on applique un seuil afin de définir si oui ou non le réseau à correctement classifié l'entrée.\\
+Dans le cas du XOR on met en place un seuil de 0.5.\\
+On cherche également à évaluer la vitesse d'apprentissage, ainsi on calcule le pourcentage de succès du réseau à intervalle régulier au cours de l'apprentissge. Les réseaux étant soumis à une forte composante aléatoire (l'ordre d'apprentissage, ainsi que l'initialisation des poids), on effectue des apprentissages dans les mêmes conditions plusieurs fois afin d'obtenir des courbes moyennes, et des intervalles de confiances justifiant nos résultats.
+% paragraph notion_de_résultats (end)
+
+\paragraph{Réseau en $2\rightarrow2\rightarrow1$} % (fold)
+
+Les résultats obtenus au début sur ce réseau le plus simple semblait tout à fait aléatoire et nous on permit de détecter des erreurs de traductions des équations de rétropropagations en code Python. Nous avons finalement pu obtenir des résultats satisfaisants comme le montre la figure \ref{fig:2_2_1}. Cependant ce résultat n'était pas obtenu dans l'intégralité des apprentissages, nous fournissant des résultats très différents, comme sur la figure \ref{fig:2_2_1_echec}. La littératures et en particulier les rapports des années précédentes \cite{appartement} et \cite{Pinaple} nous on montré que dans le XOR n'était effectivement pas juste dans 100\% des cas.\\
+Nous avons donc établis soumis le réseau à de nombreux apprentissages, en faisant varier les paramètres ainsi que la forme du réseaux. Voici les résultats les plus intéressants :
+
+% paragraph réseau_en_2_2_1 (end)
+
+\paragraph{Conclusion sur le XOR} % (fold)
+\label{par:conclusion_sur_le_xor}
+Instabilité du réseau $2\rightarrow2\rightarrow1$ et comparaison avec le $ 2 \rightarrow 4 \rightarrow 1 $ et le $2 \rightarrow 2 \rightarrow 2 \rightarrow 1 $ \\
+Pas d'apprentissage très petit par rapport à la littérature\\
+Influence des fonctions d'activation
+% paragraph conclusion_sur_le_xor (end)
 
 
 
