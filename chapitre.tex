@@ -29,6 +29,20 @@ Description des outils mis en place pour le projet et de certains choix techniqu
 \subsection{apprentissage par rétropropagation}
 
 
+La rétro-propagation des erreurs est un type d’apprentissage supervisé pour les perceptrons multicouches. Il consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence.
+
+Les paramètres que l’on fait évoluer sont les poids et les biais.
+La formule de mise à jour est la suivante :
+
+\[
+W(t+1) = W(t) + \eta \frac{\partial E}{\partial W} 
+\]
+avec $\eta$ le pas de convergence, $\frac{\partial E}{\partial W} $ la matrice de terme général $\frac{\partial E}{\partial W_{i,j}} $\\
+Pour pouvoir mettre à jour les poids, il faut donc calculer les $\frac{\partial E}{\partial W_{i,j}} $.\\
+A la couche $k$ l'influence des poids est donnée par : 
+\[
+	\frac{\partial E^p}{\partial W _k} = \frac{\partial F}{\partial W}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
+\]
 
 
 
