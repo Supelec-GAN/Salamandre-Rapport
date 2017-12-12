@@ -27,21 +27,21 @@ Description des outils mis en place pour le projet et de certains choix techniqu
 
 \subsection{Le neurone} % (fold)
 \label{sub:le_neurone}
-L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de \bbbR dans \bbbR. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par leur poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
+L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\mathbb{R}$ dans $\mathbb{R}$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par leur poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
 
 Un exemple simple du réseau de neurones est la séparation d’un plan en 2.\\
 Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside).\\
 Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) – b >0$ et 0 sinon.\\
 
-Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan. On reconnait dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon quel côté de la droite ils se trouvent.\\
+Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan. On reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon quel côté de la droite ils se trouvent.\\
 
-On peut déjà voir qu’une modification des poids entrainera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids, nous reviendrons sur ce concept par la suite\\
+On peut déjà voir qu’une modification des poids entraînera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids, nous reviendrons sur ce concept par la suite\\
 Cependant, les applications d’un neurone seul sont vite limitées c’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.\\
 
 \subsection{Réseau de neurones et perceptron} % (fold)
 \label{sub:reseau_de_neurones}
 On a déjà vu que le neurone se prêtait bien à la classification de données. On va voir que l’organisation de neurones en réseau permet des classifications bien plus fines.\\
-L’organisation du réseau se fera au moyen de couches : des neurones d’une couche n auront comme entrée la sortie de neurones situés sur la couche n-1. La couche donnant le résultat final sera appelée couche de sortie, toutes les couches qui la précèdent seront appelées couches cachées. Une telle appellation se comprend du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés, puisqu’avec la seule donnée de la sortie, on ne peut pas connaitre l’influence des poids cachés sur celle ci\\
+L’organisation du réseau se fera au moyen de couches : des neurones d’une couche n auront comme entrée la sortie de neurones situés sur la couche n-1. La couche donnant le résultat final sera appelée couche de sortie, toutes les couches qui la précèdent seront appelées couches cachées. Une telle appellation se comprend du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés, puisqu’avec la seule donnée de la sortie, on ne peut pas connaître l’influence des poids cachés sur celle ci\\
 
 Le Perceptron est un modèle de réseau de neurones sur lequel on va s’intéresser particulièrement. Il consiste en un réseau de propagation vers l’avant (aucune boucle ne peut être trouvée dans le graphe du réseau).
 L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrée. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.\\
