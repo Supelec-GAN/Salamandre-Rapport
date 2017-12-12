@@ -23,10 +23,37 @@
 
 Description des outils mis en place pour le projet et de certains choix techniques.
 
-\section{Réseaux de neurones par couches : le perceptron}
+\section{Réseaux de neurones et fonctionnement}
 
-\subsection{Structure du réseau}
-\subsection{apprentissage par rétropropagation}
+\subsection{Le neurone} % (fold)
+\label{sub:le_neurone}
+L’unité de base du réseau est le neuron, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune afféctée d’un poids wi. Et une fonction mathématique de R dans R Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par leur poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
+
+Un exemple simple du réseau de neuron est la séparation d’un plan en 2.\\
+Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside).\\
+Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) – b >0$ et 0 sinon.\\
+
+Si les e1 et e2 représentent les abscisse et ordonnée d’un point du plan. On reconnait dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon quel côté de la droite ils se trouvent.\\
+
+On peut déjà voir qu’une modification des poids entrainera une différente délimitation du plan. On peut donc imaginer faire « apprendre »au réseau quels points délimiter en modifiant ses poids, nous reviendrons sur ce concept par la suite\\
+Cependant, les applications d’un neurone seul sont vite limitées c’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.\\
+
+\subsection{Réseau de neurones et perceptron} % (fold)
+\label{sub:reseau_de_neurones}
+On a déjà vu que le neurone se prêtait bien à la classification de données. On va voir que l’organisation de neurones en réseau permet des classifications bien plus fines.\\
+L’organisation du réseau se fera au moyen de couches : des neurones d’une couche n auront comme entrée la sortie de neurones situés sur la couche n-1. La couche donnant le résultat final sera appelée couche de sortie, toutes les couches qui la précèdent seront appelées couches cachées. Une telle appellation se comprend du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés, puisqu’avec la seule donnée de la sortie, on ne peut pas connaitre l’influence des poids cachés sur celle ci\\
+
+Le Perceptron est un modèle de réseau de neurones sur lequel on va s’intéresser particulièrement. Il consiste en un réseau de propagation vers l’avant (aucune boucle ne peut être trouvée dans le graphe du réseau).
+L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrée. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédement. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.\\
+La plupart du temps, on travaillera avec un réseau complétement connecté, c’est-à-dire que toutes les sorties d’une couche sont toutes les entrées de la couche suivante.
+
+% subsection reseau_de_neurones (end)
+
+
+
+% subsection le_neurone (end)
+
+\subsection{Apprentissage par rétropropagation}
 
 
 La rétro-propagation des erreurs est un type d’apprentissage supervisé pour les perceptrons multicouches. Il consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence.
@@ -43,9 +70,17 @@ A la couche $k$ l'influence des poids est donnée par :
 \[
 	\frac{\partial E^p}{\partial W _k} = \frac{\partial F}{\partial W}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
 \]
+Avec $\frac{\partial F}{\partial X }(W_k, X_{k-1})$ la matrice jacobienne de $F$ par rapport à la variable $X_k$. De plus, dans un perceptron on peut noter la sortie de la couche $k$ : 
+\[
+Y_k = W_k X_k \\
+X_k = F(Y_k)
+\]
 
-
-
+On obtient donc ses 3 équations : 
+\begin{align*}
+\frac{\partial E^p}{\partial y_k^i} &= f'(x_k^i)\frac{\partial E^p}{\partial x_k^i} \\
+\frac{\partial E^p}{\partial w_k^{i,j}}&= x^j_{k-1} \frac{\partial E^p}{\partial y_k^u}
+\end{align*}
 \section{Application au problème du XOR}
 
 \paragraph*{}
