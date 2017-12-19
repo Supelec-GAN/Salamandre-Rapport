@@ -27,25 +27,27 @@ Description des outils mis en place pour le projet et de certains choix techniqu
 
 \subsection{Le neurone} % (fold)
 \label{sub:le_neurone}
-L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\mathbb{R}$ dans $\mathbb{R}$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par leur poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
+L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\R$ dans $\R$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par leur poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
 
-Un exemple simple du réseau de neurones est la séparation d’un plan en 2.\\
-Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside).\\
+Un exemple simple du réseau de neurones est la séparation d’un plan en deux.\\
+Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside par exemple).\\
 Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) – b >0$ et 0 sinon.\\
 
-Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan. On reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon quel côté de la droite ils se trouvent.\\
+Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan, on reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon le côté de la droite où ils se trouvent.\\
 
-On peut déjà voir qu’une modification des poids entraînera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids, nous reviendrons sur ce concept par la suite\\
-Cependant, les applications d’un neurone seul sont vite limitées c’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.\\
+On peut déjà voir qu’une modification des poids entraînera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids. Nous reviendrons sur ce concept par la suite.\\
+Cependant, les applications d’un neurone seul sont vite limitées. C’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.\\
 
 \subsection{Réseau de neurones et perceptron} % (fold)
 \label{sub:reseau_de_neurones}
-On a déjà vu que le neurone se prêtait bien à la classification de données. On va voir que l’organisation de neurones en réseau permet des classifications bien plus fines.\\
-L’organisation du réseau se fera au moyen de couches : des neurones d’une couche n auront comme entrée la sortie de neurones situés sur la couche n-1. La couche donnant le résultat final sera appelée couche de sortie, toutes les couches qui la précèdent seront appelées couches cachées. Une telle appellation se comprend du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés, puisqu’avec la seule donnée de la sortie, on ne peut pas connaître l’influence des poids cachés sur celle ci\\
+On a déjà vu que le neurone se prêtait bien à une séparation binaire des données. On va voir que l’organisation de neurones en réseau permet de meilleures classifications.\\
+L’organisation du réseau se fera au moyen de couches de neurones. 
+Dans les structures les plus basiques, la sortie d'une couche est utilisée comme l'entrée de la couche suivante. On peut imaginer des réseaux plus complexes où la sortue n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures.
+On appelle la dernière couche, celle qui donne le résultat du réseau de neurones, la couche de sortie et la première couche où l'on donne les entrées est appelée couche d'entrée. Les autres couches sont appelées des couches cachées. Cette appellation vient du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés. En effet, avec la seule donnée de la sortie, l’influence des poids des couches cachées sur celle-ci n'est pas évidente.\\
 
-Le Perceptron est un modèle de réseau de neurones sur lequel on va s’intéresser particulièrement. Il consiste en un réseau de propagation vers l’avant (aucune boucle ne peut être trouvée dans le graphe du réseau).
-L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrée. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.\\
-La plupart du temps, on travaillera avec un réseau complètement connecté, c’est-à-dire que toutes les sorties d’une couche sont toutes les entrées de la couche suivante.
+Le perceptron est un modèle de réseau de neurones au lequel on va s’intéresser particulièrement.Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
+L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.\\
+
 
 % subsection reseau_de_neurones (end)
 
@@ -55,8 +57,10 @@ La plupart du temps, on travaillera avec un réseau complètement connecté, c�
 
 \subsection{Apprentissage par rétro-propagation}
 
+Il existe plusieurs types d'apprentissages du réseau. Les deux grandes catégories sont l'apprentissage supervisé et l'apprentissage non supervisé. 
+Dans le cadre du perceptron, nous utilisons seulement un apprentissage non supervisé, la rétro-propagation des erreurs. Un apprentissage supervisé nécessite une base d'apprentissage à enseigner au réseau. Elle est composée d'associations entrées et sorties voulues. Le réseau déduira de cette base les autres cas qu'on ne lui aura pas appris. 
 
-La rétro-propagation des erreurs est un type d’apprentissage supervisé pour les perceptrons multicouches. Il consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence.
+La rétro-propagation consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence.
 
 Les paramètres que l’on fait évoluer sont les poids et les biais.
 La formule de mise à jour est la suivante :
@@ -70,40 +74,60 @@ A la couche $k$ l'influence des poids est donnée par :
 \[
 	\frac{\partial E^p}{\partial W _k} = \frac{\partial F}{\partial W}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
 \]
+
+Avec $\frac{\partial F}{\partial W}(W_k, X_{k-1})$ la matrice jacobienne de F par rapport à la variable $W_k$
+
+Pour pouvoir calculer l'influence des poids de toutes les couches, il faut donc calculer $\frac{\partial E^p}{\partial W_k}$
+
+On peut calculer par récurrence cette valeur pour toutes les couches.
+\[
+	\frac{\partial E^p}{\partial X _{k-1}} = \frac{\partial F}{\partial X}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
+\]
+
 Avec $\frac{\partial F}{\partial X }(W_k, X_{k-1})$ la matrice jacobienne de $F$ par rapport à la variable $X_k$. De plus, dans un perceptron on peut noter la sortie de la couche $k$ : 
 \[
-Y_k = W_k X_k \\
+Y_k = W_k X_k \]
+\[
 X_k = F(Y_k)
 \]
 
-On obtient donc ses 3 équations : 
+On obtient donc ces 3 équations : 
 \begin{align*}
 \frac{\partial E^p}{\partial y_k^i} &= f'(x_k^i)\frac{\partial E^p}{\partial x_k^i} \\
-\frac{\partial E^p}{\partial w_k^{i,j}}&= x^j_{k-1} \frac{\partial E^p}{\partial y_k^u}
+\frac{\partial E^p}{\partial w_k^{i,j}}&= x^j_{k-1} \frac{\partial E^p}{\partial y_k^i}\\
+\frac{\partial E^p}{\partial x_{k-1}^m} &= \sum_i(w_k^{im}\frac{\partial E^p}{\partial X_k})
 \end{align*}
+
+En forme matricielle, ces équations donnent :
+\begin{align*}
+\frac{\partial E^p}{\partial Y_k} &= Diag(f'(x_k^i))\frac{\partial E^p}{\partial x_k^i} \\
+\frac{\partial E^p}{\partial W_k}&= X^T_{k-1} \frac{\partial E^p}{\partial Y_k}\\
+\frac{\partial E^p}{\partial X_{k-1}} &= W_k^T\frac{\partial E^p}{\partial X_k}
+\end{align*}
+
 \section{Application au problème du XOR}
 
 \paragraph*{}
-Lorsque l'on souhaite travailler sur des algorithmes d'apprentissages par ordinateur il est recommandé de les essayer sur des problèmes connus afin d'en vérifier les performances. \\
+Lorsque l'on souhaite travailler sur des algorithmes d'apprentissage par ordinateur il est recommandé de les essayer sur des problèmes connus afin d'en vérifier les performances. \\
 Le problème du XOR est l'un des plus classiques car il apporte de nombreuses difficultés.\\
 
-L'objectif du XOR est de séparer le plan complexe en quatre cadrants, $(x >0, y > 0)$, $ (x>0, y<0)$, $ (x<0, y>0)$ et $ (x>0, y<0) $. Pour l'expérimentation on restreint le plan à $[-1;1]^2$. Les sorties attendues par le réseau de neurones sont alors 1 pour les points tel que $x*y > 0 $ et -1 pour les points tels que $x*y<0$. \\
+L'objectif du XOR est de séparer le plan complexe en quatre cadrants, $(x >0, y > 0)$, $ (x>0, y<0)$, $ (x<0, y>0)$ et $ (x>0, y<0) $. Pour l'expérimentation, on restreint le plan à $[-1;1]^2$. Les sorties attendues par le réseau de neurones sont alors 1 pour les points tel que $x*y > 0 $ et -1 pour les points tels que $x*y<0$. \\
 Le premier intérêt de ce problème est qu'il est non linéaire, cela se traduit par le fait qu'une droite séparant le plan en 2 ne répond pas du tout au problème.\\
 
-C'est en se basant sur la résolution du XOR que nous avons construits notre structure de réseau et vérifié la cohérence de notre code. La littérature propose comme réseau le plus simple pour ce problème une couche cachée de 2 neurones, avec 2 entrées ($x$ et $y$) et 1 sortie dans $[-1, 1]$. Nous avons étudié également quelques autres formes de réseaux pour comparer les résultats.
+C'est en se basant sur la résolution du XOR que nous avons construit notre structure de réseau et vérifié la cohérence de notre code. La littérature propose comme réseau le plus simple pour ce problème une couche cachée de 2 neurones, avec 2 entrées ($x$ et $y$) et 1 sortie dans $[-1, 1]$. Nous avons étudié également quelques autres formes de réseaux pour comparer les résultats.
 
 \paragraph{Notion de résultats} % (fold)
 \label{par:notion_de_resultats}
-La notion de résultats nécessite d'être correctement définie afin de pouvoir être interprétée correctement. En particulier pour la comparaison à d'autres résultats obtenus par nous même ou par d'autres personnes. \\
-La structure de perceptron sous cette forme classe les objets que l'on donne en entrée. Généralement le résultat est défini par rapport à un pourcentage de succès dans cette classification. Pour l'obtenir on commence par définir une erreur relative, c'est à dire une distance entre la sortie cible et la sortie obtenue. Un seuil est alors appliqué afin de définir une sortie booléenne de la classification de l'entrée.\\
-Dans le cas du XOR on met en place un seuil de 0.5, c'est à dire que si l'erreur est inférieur à 50\% le réseau à raison. Cela peut s’interpréter comme suit : Le réseau donne un résultat qui indique ça confiance dans la sortie. 1 ou 0 si il est certain que la sortie doit être 1 ou 0, 0.5 si il ne peut départager l'un ou l'autre, le seuil consiste à dire que sa réponse est celle en qui il a le plus confiance.\
-On cherche également à évaluer la vitesse d'apprentissage, ainsi on calcule le pourcentage de succès du réseau à intervalle régulier au cours de l'apprentissage. Les réseaux étant soumis à une forte composante aléatoire (l'ordre d'apprentissage, ainsi que l'initialisation des poids), on effectue des apprentissages dans les mêmes conditions plusieurs fois afin d'obtenir des courbes moyennes, et des intervalles de confiances justifiant nos résultats.
+La notion de résultats nécessite d'être correctement définie afin de pouvoir être interprétée correctement, en particulier, pour la comparaison à d'autres résultats obtenus par nous-même ou par d'autres personnes. \\
+La structure de perceptron sous cette forme classe les objets que l'on donne en entrée. Généralement, le résultat est défini par rapport à un pourcentage de succès dans cette classification. Pour l'obtenir on commence par définir une erreur relative, c'est à dire une distance entre la sortie cible et la sortie obtenue. Un seuil est alors appliqué afin de définir une sortie booléenne de la classification de l'entrée.\\
+Dans le cas du XOR on met en place un seuil de 0.5, c'est à dire que si l'erreur est inférieure à 50\% le réseau a raison. Cela peut s’interpréter comme suit : Le réseau donne un résultat qui indique sa confiance dans la sortie. 1 ou 0 si il est certain que la sortie doit être 1 ou 0, 0.5 si il ne peut départager l'un ou l'autre, le seuil consiste à dire que sa réponse est celle en qui il a le plus confiance.\
+On cherche également à évaluer la vitesse d'apprentissage, ainsi on calcule le pourcentage de succès du réseau à intervalles réguliers au cours de l'apprentissage. Les réseaux étant soumis à une forte composante aléatoire (l'ordre d'apprentissage, ainsi que l'initialisation des poids), on effectue des apprentissages dans les mêmes conditions plusieurs fois afin d'obtenir des courbes moyennes, et des intervalles de confiances justifiant nos résultats.
 % paragraph notion_de_résultats (end)
 
 \paragraph{Réseau en $2\rightarrow2\rightarrow1$} % (fold)
 
-Les résultats obtenus au début sur ce réseau le plus simple semblait tout à fait aléatoire et nous on permit de détecter des erreurs de traductions des équations de rétropropagations en code Python. Nous avons finalement pu obtenir des résultats satisfaisants comme le montre la figure \ref{fig:2_2_1}. Cependant ce résultat n'était pas obtenu dans l'intégralité des apprentissages, nous fournissant des résultats très différents, comme sur la figure \ref{fig:2_2_1_echec}. La littérature et en particulier les rapports des années précédentes \cite{appartement} et \cite{Pinaple} nous on montré que le XOR n'était effectivement pas juste dans 100\% des cas.\\
-Nous avons donc établis soumis le réseau à de nombreux apprentissages, en faisant varier les paramètres ainsi que la forme du réseaux. Voici les résultats les plus intéressants :
+Les résultats obtenus au début sur ce réseau le plus simple semblaient tout à fait aléatoires et nous ont permis de détecter des erreurs de traduction des équations de rétro-propagation en code Python. Nous avons finalement pu obtenir des résultats satisfaisants comme le montre la figure \ref{fig:2_2_1}. Cependant, ce résultat n'était pas obtenu dans l'intégralité des apprentissages, nous fournissant des résultats très différents, comme sur la figure \ref{fig:2_2_1_echec}. La littérature, et en particulier les rapports des années précédentes \cite{appartement} et \cite{Pinaple}, nous on montré que le XOR n'était effectivement pas juste dans 100\% des cas.\\
+Nous avons donc soumis le réseau à de nombreux apprentissages, en faisant varier les paramètres ainsi que la forme du réseau. Voici les résultats les plus intéressants :
 
 % paragraph réseau_en_2_2_1 (end)
 
@@ -113,9 +137,3 @@ Instabilité du réseau $2\rightarrow2\rightarrow1$ et comparaison avec le $ 2 \
 Pas d'apprentissage très petit par rapport à la littérature\\
 Influence des fonctions d'activation
 % paragraph conclusion_sur_le_xor (end)
-
-
-
-
-
-
