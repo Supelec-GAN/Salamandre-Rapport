@@ -1,0 +1,46 @@
+% \begin{figure}[htb]
+% \begin{center}
+% %optional pour enlever un peu d'espace blanc de votre silhouette
+% %\vspace{-.3cm}
+%  %\includegraphics[keepaspectratio,width=0.5\textwidth]{fig/nomde}
+% % analoog
+% %\vspace{-0.6cm}
+%  % \caption{ici un logo}
+%  % \label{fig:ruglogo}
+% %analoog
+% %\vspace{-.6cm}
+% \end{center}
+% \end{figure}
+
+% Utilisation du template
+% \cite(reference à citer)
+% \ref(figure à référencer)
+
+
+\chapter{Generative Adversarial Networks}
+
+\paragraph{Après avoir utilisé des perceptrons dans des problèmes de classification (XOR, reconnaissance de chiffres manuscrits), nous allons leur faire générer des images.}
+
+\section{Principe}
+\paragraph{Le but du GAN est de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo. Un GAN est constitué de deux réseaux de neurones : le Générateur (G) et le Discriminateur (D). Le Générateur a pour but de créer les images et le Discriminateur de déterminer si les images qu’on lui donne sont de « vraies » images ou ont été créées par le Générateur. Ces deux réseaux sont mis en compétition : le Générateur a pour but de tromper le Discriminateur tandis que le Discriminateur doit discerner les « fausses » images. }
+
+\paragraph{L’apprentissage du Discriminateur se fait à la fois sur des images générées par le Générateur et de « vraies » images, issues d’une banque d’images.\\
+L’apprentissage du Générateur dépend aussi du Discriminateur : lorsqu’il génère une image, on la donne au Discriminateur pour voir si le Générateur a réussi à le tromper. L’apprentissage du Générateur se fait sur la réponse du Discriminateur.}
+
+\paragraph{De façon plus formelle, on travaille avec 3 distributions : $p_x$, la distribution idéale des vraies images, $p_{data}$, l’échantillon des vraies images et $p_{model}$ la distribution réalisée par les images issues du Générateur. Le but de l’apprentissage est de rapprocher $p_{model}$ de $p_x$. Comme $p_x$ nous est inconnu, on va plutôt s'approcher de $p_{data}$. }
+
+\paragraph{Notre algorithme d’apprentissage repose une fois encore sur la descente de gradient et la rétro-propagation des erreurs. Cependant, les fonctions d’erreur sont différentes. En effet, nous ne connaissons pas la distribution exacte et ne pouvons donc pas minimiser une « distance minimale » entre le résultat obtenu et le résultat désiré. }
+
+\section{Apprentissage}
+\paragraph{L’apprentissage se déroule ainsi :\\
+Nous fournissons au Discriminateur des images x (de la BDD MNIST par exemple) et lui demandons de nous renvoyer un réel entre 0 et 1, qui représente son degré de confiance sur le fait que l’image fournie ai été tirée d’une banque de donnée authentique (D(x) = 1) ou du Générateur (D(x) =0).\\
+Le Générateur, quant à lui, devra générer une image à partir d’un vecteur de bruit z. Cette image est ensuite jugée par le Discriminateur : D(G(z)) = 1 si le Générateur a dupé le Discriminateur et 0 sinon. Puis, on effectue une rétropropagation à travers les deux réseaux pour les faire apprendre.}
+\paragraph{
+Les réseaux utilisés sont ceux que nous avons utilisé auparavant : des perceptrons multi-couches. Le Discriminateur, en particulier, reprend la même structure qu’un perceptron utilisé pour reconnaître des chiffres manuscrits.
+}
+
+\section{Résultats}
+
+
+\section{Améliorations}
+
