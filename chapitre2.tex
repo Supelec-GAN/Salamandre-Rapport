@@ -17,12 +17,12 @@
 % \ref(figure à référencer)
 
 
+
 \chapter{Generative Adversarial Networks}
 
 \paragraph{}
 La première partie de cette étude nous a permis de maîtriser l'utilisation de réseaux en perceptron et de structurer une architecture logicielle efficace et souple pour l'étude des GAN. \\
-Après avoir obtenu des résultats satisfaisants sur la reconnaissance de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par \cite{}
-
+Après avoir obtenu des résultats satisfaisants sur la reconnaissance de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{nips-2014}
 \section{Principe}
 \paragraph{}
 Le but du GAN est de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo. Un GAN est constitué de deux réseaux de neurones : le Générateur (G) et le Discriminateur (D). Le Générateur a pour but de créer les images et le Discriminateur de déterminer si les images qu’on lui donne sont de « vraies » images ou ont été créées par le Générateur. Ces deux réseaux sont mis en compétition : le Générateur a pour but de tromper le Discriminateur tandis que le Discriminateur doit discerner les « fausses » images.\\
