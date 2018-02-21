@@ -1,3 +1,4 @@
+
 %
 %  THESISBOEK
 %
@@ -10,6 +11,7 @@
 \documentclass[11pt,a4paper,oneside,notitlepage]{book}
 \usepackage[french]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 
 % ajustement des marges 
 % (opmerking: moet *voor* inclusie van fancyhdr package komen)
@@ -18,8 +20,8 @@
 \setlength{\topmargin}{2cm}
 \setlength{\headheight}{0.5cm}
 \setlength{\headsep}{1cm}
-\setlength{\oddsidemargin}{3.5cm}
-\setlength{\evensidemargin}{3.5cm}
+\setlength{\oddsidemargin}{2.5cm}
+\setlength{\evensidemargin}{2.5cm}
 \setlength{\textwidth}{16cm}
 \setlength{\textheight}{23.3cm}
 \setlength{\footskip}{1.5cm}
@@ -44,17 +46,17 @@
 \def\R{\textrm{I\kern-0.21emR}}
 
 \fancyhf{}
-\fancyhead[LE,RO]{\headerfmtpage{\thepage}}
-\fancyhead[LO]{\headerfmt{\rightmark}}
-\fancyhead[RE]{\headerfmt{\leftmark}}
+\fancyhead[L,R]{\headerfmtpage{\thepage}}
+\fancyhead[L]{\headerfmt{\rightmark}}
+\fancyhead[R]{\headerfmt{\leftmark}}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\footrulewidth}{0pt}
 
 \fancypagestyle{plain}{ % première page d'un chapitre
   \fancyhf{}
-  \fancyhead[LE,RO]{\headerfmtpage{\thepage}}
-  \fancyhead[LO]{\headerfmt{\rightmark}}
-  \fancyhead[RE]{\headerfmt{\leftmark}}
+  \fancyhead[L,R]{\headerfmtpage{\thepage}}
+  \fancyhead[L]{\headerfmt{\rightmark}}
+  \fancyhead[R]{\headerfmt{\leftmark}}
   \renewcommand{\headrulewidth}{0.5pt}
   \renewcommand{\footrulewidth}{0pt}
 }
@@ -65,10 +67,10 @@
 %si LaTeX ne se divise pas bien, incluez votre mot, ou peut-être empêcher le fractionnement
 \hyphenation{ditmagnooitgesplitstworden dit-woord-splitst-hier}
 
+
 \begin{document}
 
 \include{titre}
-
 % lege pagina (!!)
 
 % titelblad (!!)
@@ -104,8 +106,9 @@
 
 % insérez les annexes ici (\includes)
 
+\bibliographystyle{plain}
+\bibliography{reference}
 
-\include{reference}
 
 \backmatter
 

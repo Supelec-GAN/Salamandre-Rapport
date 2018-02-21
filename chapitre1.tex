@@ -27,26 +27,26 @@ Description des outils mis en place pour le projet et de certains choix techniqu
 
 \subsection{Le neurone} % (fold)
 \label{sub:le_neurone}
-L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\R$ dans $\R$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par le poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).\\
+L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\R$ dans $\R$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par le poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).
 
 Un exemple simple du réseau de neurones est la séparation d’un plan en deux.\\
 Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside par exemple).\\
-Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) – b >0$ et 0 sinon.\\
+Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) - b >0$ et 0 sinon.
 
-Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan, on reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon le côté de la droite où ils se trouvent.\\
+Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan, on reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon le côté de la droite où ils se trouvent.
 
 On peut déjà voir qu’une modification des poids entraînera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids. Nous reviendrons sur ce concept par la suite.\\
-Cependant, les applications d’un neurone seul sont vite limitées. C’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.\\
+Cependant, les applications d’un neurone seul sont vite limitées. C’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.
 
 \subsection{Réseau de neurones et perceptron} % (fold)
 \label{sub:reseau_de_neurones}
 On a déjà vu que le neurone se prêtait bien à une séparation binaire des données. On va voir que l’organisation de neurones en réseau permet de meilleures classifications.\\
 L’organisation du réseau se fera au moyen de couches de neurones. 
 Dans les structures les plus basiques, la sortie d'une couche est utilisée comme l'entrée de la couche suivante. On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures.
-On appelle la dernière couche, celle qui donne le résultat du réseau de neurones, la couche de sortie; et la première couche où l'on donne les entrées est appelée couche d'entrée. Les autres couches sont appelées des couches cachées. Cette appellation vient du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés. En effet, avec la seule donnée de la sortie, l’influence des poids des couches cachées sur celle-ci n'est pas évidente.\\
+On appelle la dernière couche, celle qui donne le résultat du réseau de neurones, la couche de sortie; et la première couche où l'on donne les entrées est appelée couche d'entrée. Les autres couches sont appelées des couches cachées. Cette appellation vient du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés. En effet, avec la seule donnée de la sortie, l’influence des poids des couches cachées sur celle-ci n'est pas évidente.
 
 Le perceptron est un modèle de réseau de neurones auquel on va s’intéresser particulièrement.Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
-L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.\\
+L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.
 
 
 % subsection reseau_de_neurones (end)
@@ -109,10 +109,10 @@ En forme matricielle, ces équations donnent :
 
 \paragraph*{}
 Lorsque l'on souhaite travailler sur des algorithmes d'apprentissage par ordinateur, il est recommandé de les essayer sur des problèmes connus afin d'en vérifier les performances. \\
-Le problème du XOR est l'un des plus classiques car il apporte de nombreuses difficultés.\\
+Le problème du XOR est l'un des plus classiques car il apporte de nombreuses difficultés.
 
 L'objectif du XOR est de séparer le plan complexe en quatre cadrants, $(x >0, y > 0)$, $ (x>0, y<0)$, $ (x<0, y>0)$ et $ (x>0, y<0) $. Pour l'expérimentation, on restreint le plan à $[-1;1]^2$. Les sorties attendues par le réseau de neurones sont alors 1 pour les points tel que $x*y > 0 $ et -1 pour les points tels que $x*y<0$. \\
-Le premier intérêt de ce problème est qu'il est non linéaire. Cela se traduit par le fait qu'une droite séparant le plan en 2 ne répond pas du tout au problème.\\
+Le premier intérêt de ce problème est qu'il est non linéaire. Cela se traduit par le fait qu'une droite séparant le plan en 2 ne répond pas du tout au problème.
 
 C'est en se basant sur la résolution du XOR que nous avons construit notre structure de réseau et vérifié la cohérence de notre code. La littérature propose comme réseau le plus simple pour ce problème une couche cachée de 2 neurones, avec 2 entrées ($x$ et $y$) et 1 sortie dans $[-1, 1]$. Nous avons étudié également quelques autres formes de réseaux pour comparer les résultats.
 
