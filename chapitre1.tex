@@ -109,6 +109,38 @@ En forme matricielle, ces équations donnent :
 \frac{\partial E^p}{\partial X_{k-1}} &= W_k^T\frac{\partial E^p}{\partial X_k}
 \end{align*}
 
+
+\section{Conception logicielle des réseaux de neurones}
+\paragraph*{} % (fold)
+L'un des objectifs du projet est la conception d'une librairie permettant l'implémentation de réseaux de neurones. Notre démarche est la suivante, nous cherchons à mettre en place la structure la plus simple possible mais également la plus souple possible. Ainsi nous ne cherchons pas l'exhaustivité de notre librairie, mais nous pouvons facilement la compléter dès lors que nous avons besoin de fonctionnalité supplémentaire.
+
+\paragraph*{} % (fold)
+Notre code est structuré autour de 3 types de classes, les classes permettant la création et le fonctionnement d'un ou plusieurs réseaux de neurones (ce sont les classes qui font l'intelligence du programme, noté $brain$), les classes apportant des outils de compréhension et de travail sur les réseaux (affichage de résultats, chargement et sauvegarde de paramètres, etc) et les classes permettant de lancer une expérience (classes $main$, instanciant les objets et les expériences).
+
+Le projet est découpé en 2 répertoire Github, le premier correspondant au code le plus simple, fonctionnel sur le problème du XOR, le second correspondant au développement suivant. Ces derniers développement correspondent à la généralisation à tout types de problèmes d'apprentissage de perception simple, puis à la mise en place du GAN et toutes les évolutions que nous avons mis en place.
+
+Vous pouvez retrouver les codes sur https://github.com/Supelec-GAN/Salamandre-XOR.git et sur https://github.com/Supelec-GAN/Salamandre-Code.git .
+
+\subsection{Structure du code} % (fold)
+\label{sub:structure_du_code}
+
+Afin de pouvoir implémenter facilement les calculs matricielles obtenus plus tôt, nous définissons notre plus bas niveau d'intelligence par une classe NeuronLayer représentant une couche de neurone. \\
+
+Une couche de neurones est défini par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation_function$, nécessairement commune à tout les neurones dans cette structure.
+
+\paragraph{Présentatation des méthodes} % (fold)
+ \label{par:presentatation_des_methodes}
+ 
+ \begin{itemize}
+ 	\item $compute$ : Propagation d'une entrée au sein de cette couche
+ 	\item 
+ \end{itemize}
+ % paragraph presentatation_des_methodes (end) 
+
+% subsection structure_du_code (end)
+
+
+
 \section{Application au problème du XOR}
 
 \paragraph*{}
