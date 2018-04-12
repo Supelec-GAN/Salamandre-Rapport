@@ -176,4 +176,49 @@ Influence des fonctions d'activation
 
 \section{Application à la base de données MNIST}
 
+\subsection*{Description du problème} % (fold)
 
+Pour le problème du MNIST qui consiste à apprendre à reconnaitre des chiffres manuscrits, les données étaient les suivantes : 
+\begin{itemize}
+	\item 60000 images pour l’apprentissage, avec leurs étiquettes
+	\item 10000 images de test
+\end{itemize}
+
+Toutes les images ont une dimension de 28*28 pixels en noir et blanc. Ces sets d’images sont récupérables sur le site http://yann.lecun.com/exdb/mnist/ sous le format IDX. L’extraction de ce format vers une liste python est faite grâce au module python-mnist.
+
+\subsection*{Paramètres généraux utilisés :} % (fold)
+Les fonctions d’activation utilisées pour toutes les expériences ici sont des sigmoïdes de paramètre $\mu$ : 
+$\sigma_\mu(x) = \frac{1}{1+e^{-\mu x}}$\\
+On pourra étudier l’influence de mu sur la vitesse de convergence.
+Puisque les fonctions d’activation utilisées sont des sigmoïdes dont la sortie est dans [0, 1], les valeurs d’entrées situées entre 0 et 255 sont normalisées entre 0 et 1.\\
+L’erreur utilisée sur la couche de sortie est l’erreur quadratique.\\
+Les poids sont initialisés avec une répartition gaussienne centrée réduite. Les biais sont initialisés à 0.\\
+De bons résultats ont été obtenus avec le réseau suivant, conformément à la littérature :
+\begin{itemize}
+	\item Eta 0.2
+	\item Sigmoïde 0.1
+	\item Réseau à une couche cachée de 300 neurones et 10 neurones de sortie (784-300-10)
+	\item Apprentissage stochastique
+\end{itemize}
+Avec ce type de réseau, on obtient rapidement des taux de succès proche de 95\% après 10 passes de l’ensemble du set d’apprentissages, et un écart-type final de ????. Nous allons maintenant voir l’influence des différents paramètres.
+
+\subsubsection*{Variation d’êta :}
+
+
+Sur le réseau 300-10 précédent, une augmentation du êta de 0.2 à 10 ne semble qu’améliorer la vitesse de convergence : [[insert courbe (cf 17/01/18)]]
+L’écart-type n’augmente pas et on obtient une meilleure précision à la fin.
+
+\subsubsection*{Choix du paramètre de la sigmoïde :}
+Ici, l’influence du choix de la sigmoïde est observée. Les tests ont été effectués avec $\mu = 0.1$ et $\mu = 0.5$ comme paramètre de sigmoïdes.
+[[insert courbe (cf 17/01/18)]]
+On remarque qu’en tout point, choisir 0.1 en paramètre à la place de 0.5 est mieux : vitesse de convergence, précision finale, écart-type. Ce résultat empire avec un êta plus élevé, au point de ne plus réussir à apprendre. On restera donc sur une sigmoïde de paramètre 0.1 pour la suite des expériences.
+
+\subsubsection*{Différents réseaux :} 
+Intuitivement, un réseau avec plus de couches cachées devrait obtenir une meilleure précision, mais devrait avoir un temps d’apprentissage plus long. Ces résultats se confirment avec des expériences sur le réseau à un couche cachée (300 neurones) précédent, et un réseau sans couche cachée. Ce dernier converge très vite aussi bien vis-à-vis du nombre d’apprentissage nécessaire que du temps de calcul. Cependant, il est difficile de dépasser les 90\% de succès. Alors que sur le réseau avec couche cachée, on arrive à obtenir moins de 5\% d’erreur. En revanche, les temps de calculs sont plus élevés. Le réseau avec deux couches cachées, 1000 puis 300, a aussi été testé. Les résultats ici sont satisfaisants, cependant l’amélioration des résultats n’est pas très importante, alors que les temps de calculs augmentent fortement.
+[[insert courbe (cf 17/01/18)]]
+Temps de calcul approximatifs pour une passe du set d’apprentissage, et un test tous les 1000 apprentissages :
+\begin{itemize}
+	\item 5-6 minutes pour le 784-1000-300-10
+	\item 4 minutes pour le 784-300-10 
+\end{itemize}
+Ces temps peuvent être amélioré avec l’introduction du batch learning qui permet de calculer les résultats des tests plus rapidement.
