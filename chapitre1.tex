@@ -27,6 +27,7 @@ Ce projet possède une dimension de conception logiciel. Il s'agit de programmer
 
 \section{Réseaux de neurones et fonctionnement}
 
+
 Les réseaux de neurones font partis des piliers de l'intelligence artificielle. Leur fonctionnement est basé sur une interprétation sommaire du cerveau humain. Des neurones seules reçoivent des signaux, les traitent et renvoient un signal de sortie. Les neurones sont alors agrégés en réseaux avec des entrées du réseaux et des sorties. On modélise la plasticité du cerveaux par des paramètres variables qui changent au cours de l'apprentissage, ce dernier se faisant en comparant des sorties attendues aux sorties obtenues.
 
 \subsection{Le neurone} % (fold)
@@ -52,8 +53,8 @@ On appelle la dernière couche, celle qui donne le résultat du réseau de neuro
 Le perceptron est un modèle de réseau de neurones auquel on va s’intéresser particulièrement.Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
 L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.
 
-
 % subsection reseau_de_neurones (end)
+
 
 
 
@@ -128,7 +129,7 @@ Afin de pouvoir implémenter facilement les calculs matricielles obtenus plus t�
 
 Une couche de neurones est défini par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation_function$, nécessairement commune à tout les neurones dans cette structure.
 
-\paragraph{Présentatation des méthodes} % (fold)
+\paragraph{Présentation des méthodes} % (fold)
  \label{par:presentatation_des_methodes}
  
  \begin{itemize}
