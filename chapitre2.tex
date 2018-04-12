@@ -22,31 +22,52 @@
 
 \paragraph{}
 La première partie de cette étude nous a permis de maîtriser l'utilisation de réseaux en perceptron et de structurer une architecture logicielle efficace et souple pour l'étude des GAN. \\
-Après avoir obtenu des résultats satisfaisants sur la reconnaissance de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{nips-2014}
+Après avoir obtenu des résultats satisfaisants dans la classification de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{nips-2014}.\\
+Notre objectif dans cette partie est d’appréhender le concept de GAN et de l'appliquer sur notre programme afin d'étudier les différents paramètres. 
 \section{Principe}
 \paragraph{}
-Le but du GAN est de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo. Un GAN est constitué de deux réseaux de neurones : le Générateur (G) et le Discriminateur (D). Le Générateur a pour but de créer les images et le Discriminateur de déterminer si les images qu’on lui donne sont de « vraies » images ou ont été créées par le Générateur. Ces deux réseaux sont mis en compétition : le Générateur a pour but de tromper le Discriminateur tandis que le Discriminateur doit discerner les « fausses » images.\\
-L’apprentissage du Discriminateur se fait à la fois sur des images générées par le Générateur et de « vraies » images, issues d’une banque d’images.\\
-L’apprentissage du Générateur dépend aussi du Discriminateur : lorsqu’il génère une image, on la donne au Discriminateur pour voir si le Générateur a réussi à le tromper. L’apprentissage du Générateur se fait sur la réponse du Discriminateur.
+Le GAN s'inscrit dans les problèmes de générations de données par ordinateurs. Ses modèles cherchent à produire de données nouvelles respectant un certain nombre de contraintes. Les applications possible sont très nombreuses, tant au niveau scientifiques qu'industrielles, avec par exemple la modélisation de nouvelles protéines, le dessin de circuit intégrés, etc. 
+Le but de nos GAN sera de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo.\\
+
+Le principe général est le suivant : \\ un GAN est constitué de deux réseaux de neurones, le Générateur (G) et le Discriminateur (D). Le Générateur a pour but de créer les images et le Discriminateur de déterminer si les images qu’on lui donne sont de « vraies » images ou ont été créées par le Générateur. Ces deux réseaux sont mis en compétition : le Générateur a pour but de tromper le Discriminateur tandis que le Discriminateur doit détecter les « fausses » images.\\
+L’apprentissage du Discriminateur se fait à la fois sur des images générées par le Générateur et de « vraies » images, issues d’une banque d’images afin de continuellement améliorer sa capacité de discernement.\\
+L’apprentissage du Générateur dépend de la réponse du  Discriminateur : lorsqu’il génère une image, on la donne au Discriminateur pour voir si le Générateur a réussi à le tromper. Le discriminateur sert donc de fonction d'erreur au Générateur.
 
 \paragraph{}
-De façon plus formelle, on travaille avec 3 distributions : $p_x$, la distribution idéale des vraies images, $p_{data}$, l’échantillon des vraies images et $p_{model}$ la distribution réalisée par les images issues du Générateur. Le but de l’apprentissage est de rapprocher $p_{model}$ de $p_x$. Comme $p_x$ nous est inconnu, on va plutôt s'approcher de $p_{data}$.
-
-\paragraph{}
-Notre algorithme d’apprentissage repose une fois encore sur la descente de gradient et la rétro-propagation des erreurs. Cependant, les fonctions d’erreur sont différentes. En effet, nous ne connaissons pas la distribution exacte et ne pouvons donc pas minimiser une « distance minimale » entre le résultat obtenu et le résultat désiré. 
+De façon plus formelle, on travaille avec 3 distributions : $p_x$, la distribution idéale des vraies images, $p_{data}$, la distribution de l'échantillon des vraies images et $p_{model}$ la distribution réalisée par les images issues du Générateur. Le but de l’apprentissage est de rapprocher $p_{model}$ de $p_x$. Comme $p_x$ nous est inconnu, on va plutôt s'approcher de $p_{data}$.\\
+On dispose de deux fonctions de coûts $J_D(\theta_G, \theta_D)$ et $J_G(\theta_G, \theta_D)$, représentant respectivement les fonctions de coûts du Discriminateur et du Générateur. On note $\theta_G$ et $\theta_G$ les paramètres des réseaux. Les fonctions de coûts dépendent bien des paramètres des deux réseaux car le Discriminateur apprend à discerner les vrais images des fausses, dépendantes du générateur, et le générateur apprend via le résultat du Discriminateur.\\ C'est un problème d'optimisation simultanée. 
+Il peut également être décrit comme un problème de jeux à informations complètes. G à accès aux données de D, mais ne peut influer que sur $\theta_G$ et D à accès aux données de G, mais ne peut influer que sur $\theta_G$. Cette vision permet de déduire un algorithme ou chaque joueur va faire un mouvement de manière optimal, afin de tendre vers un équilibre de Nash.
 
 \section{Apprentissage}
-\paragraph{}
-L’apprentissage se déroule ainsi :\\
-Nous fournissons au Discriminateur des images x (de la BDD MNIST par exemple) et lui demandons de nous renvoyer un réel entre 0 et 1, qui représente son degré de confiance sur le fait que l’image fournie ai été tirée d’une banque de donnée authentique (D(x) = 1) ou du Générateur (D(x) =0).\\
-Le Générateur, quant à lui, devra générer une image à partir d’un vecteur de bruit z. Cette image est ensuite jugée par le Discriminateur : D(G(z)) = 1 si le Générateur a dupé le Discriminateur et 0 sinon. Puis, on effectue une rétropropagation à travers les deux réseaux pour les faire apprendre.
 
 \paragraph{}
-Les réseaux utilisés sont ceux que nous avons utilisé auparavant : des perceptrons multi-couches. Le Discriminateur, en particulier, reprend la même structure qu’un perceptron utilisé pour reconnaître des chiffres manuscrits.
+L’apprentissage consiste à appliquer cette méthode de jeu à l'apprentissage des réseaux de neurones.
+Nous fournissons au Discriminateur des images $x$ (de la BDD MNIST par exemple) et lui demandons de nous renvoyer un réel entre 0 et 1, qui représente son degré de confiance sur le fait que l’image fournie ai été tirée d’une banque de donnée authentique ou du Générateur. Les réponses attendus sont respectivement ($D(x) = 1$) et ($D(x) =0$) ce qui nous permet de calculer des erreurs pour la descente de gradient du Discriminateur.\\ 
+Le Générateur, quant à lui, génère une image à partir d’un vecteur de bruit $z$. Cette image est ensuite jugée par le Discriminateur : $D(G(z)) = 1$ si le Générateur a dupé le Discriminateur et 0 sinon. L'objectif du Générateur est d'être le plus proche possible de la première situation, l'erreur pour la descente du gradient du Générateur en est déduite.\\
+L'apprentissage complet se fait en alternant les 2 phases successivement, chaque réseau jouant tour à tour. On parle de réseau concurrent car le Discriminateur cherche à obtenir $D(G(z)) = 0 $ pour tout $z$ et le Générateur $D(G(z)) = 1$.
 
-\section{Résultats}
+ \section{Paramètres des GANS}
 
+ Voici une description des paramètres principaux sur lequel on peut jouer pour l'implémentation d'un GAN. Ils sont nombreux car la description précédente est en réalité peu restrictive.
 
-\section{Améliorations}
+ \begin{itemize}
+ 	\item Fonctions de coûts
+ 	\item Ratios d'apprentissage
+ 	\item Paramètres classiques des réseaux de neurones (Structures des réseaux, pas d'apprentissage, etc.)
+ \end{itemize}
 
+\section{Structure et utilisation du code} % (fold)
+{description des modifications importantes pour le GAN (or optimisation du code source)}
 
+\section{Premier résultats pour des GANs simples}
+{présentation des paramètres principaux (bruit seulement à l'entrée, etc)}
+{description des résultats avec des GANs simple, sans optimisations, et évaluation des différences de paramètres}
+
+\section{Mode Collapse et Bruit en entrée}
+
+{Le mode collapse aura été présenté à la section d'avant, tentative d'explication de pourquoi on en sort avec le bruit}
+
+\section{Résultat sans collapse}
+{même chose que la section premiers résultats, mais avec le bruit en entrée}
+
+% Fin du chapitre, les autres améliorations seront dans d'autres chapitres.
