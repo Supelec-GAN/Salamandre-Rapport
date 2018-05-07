@@ -25,7 +25,7 @@
 	La première partie de cette étude nous a permis de maîtriser l'utilisation de réseaux en perceptron et de structurer une architecture logicielle efficace et souple pour l'étude des GAN. \\
 	Après avoir obtenu des résultats satisfaisants dans la classification de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{nips-2014}.\\
 	Notre objectif dans cette partie est d’appréhender le concept de GAN et de l'appliquer sur notre programme afin d'étudier les différents paramètres. 
-\section{Principe}
+\section{Principes}
 	\paragraph{}
 		Le GAN s'inscrit dans les problèmes de générations de données par ordinateurs. Ses modèles cherchent à produire de données nouvelles respectant un certain nombre de contraintes. Les applications possible sont très nombreuses, tant au niveau scientifiques qu'industrielles, avec par exemple la modélisation de nouvelles protéines, le dessin de circuit intégrés, etc. 
 		Le but de nos GAN sera de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo.\\
@@ -89,7 +89,7 @@
 	Afin d'appréhender correctement le fonctionnement des GANs, il est nécessaire de tester de nombreux paramètres. Les résultats, fructueux ou non, permettent d'évaluer l'intérêt des paramètres et de comprendre le sens "physique" de leur influence.\\
 	Ces essais se feront sur la base MNIST, c'est-à-dire que notre objectif sera d'obtenir par le générateur des chiffres manuscrits qu'il aura dessiné par lui-même. Plus précisément on attend du générateur après apprentissage que chaque entrée génère un chiffre entre 0 et 9 qu'un être humain ne peut distinguer d'un chiffre manuscrit écrit par un humain (donc de la base MNIST). De plus, chaque entrée 
 
-	\subsection{Méthodologie initial}
+	\subsection{Méthodologie initiale}
 		L'un des objectifs de ce projet est de décortiquer au mieux la méthode GAN. Pour cela nous utilisons les réseaux de neurones les plus simples, ils seront complexifiés par la suite. La plupart des articles sur le sujet présentent des réseaux utilisant des structures avancés (couche convolutive, optimiseur de descente, etc.) il n'est donc pas possible de se référer aux paramètres de ses articles pour obtenir immédiatement des résultats et s'assurer que notre programme tournent correctement. \\
 		Pour le choix du réseau Discriminateur, le choix se porte sur des structures ayant eu de bonnes performance pour le MNIST, c'est-à-dire soit un très bon taux final, soit une vitesse de convergence élevée. En effet le Discriminateur n'est qu'un simple classificateur sur la base MNIST. Le choix du générateur est plus complexe car il faut que la structure soit assez puissante pour dessiner des chiffres. Cela semble bien plus difficile que simplement les reconnaitre, car ils peuvent être reconnus à l'aide de features très particulières, tandis que la génération exige une information complète. La première idée pour dimensionner le réseau est d'avoir une entrée suffisante pour générer la diversité de sortie souhaité, mais pas nécessairement plus pour ne pas avoir un réseau trop lourd en calcul.\\
 		Pour les autres paramètres, aucune idée précise de leurs ordre de grandeur nécessaire, en particulier le pas d'apprentissage (très différents pour MNIST et XOR par exemple).\\
@@ -102,7 +102,7 @@
 
 {Le mode collapse aura été présenté à la section d'avant, tentative d'explication de pourquoi on en sort avec le bruit}
 
-\section{Résultat sans collapse}
+\section{Résultats sans collapse}
 {même chose que la section premiers résultats, mais avec le bruit en entrée}
 
 % Fin du chapitre, les autres améliorations seront dans d'autres chapitres.
