@@ -54,9 +54,24 @@
 
 	Voici une description des paramètres principaux sur lequel on peut jouer pour l'implémentation d'un GAN. Ils sont nombreux car la description précédente est en réalité peu restrictive.
 
+	\paragraph*{Fonctions de coûts : } 
+		Le premier critère intéressant des GANs est la fonction de coût (Loss Function dans la littérature) utilisé pour l'apprentissage. Il y a en réalité 2 fonctions de coût, celle pour l'apprentissage du Discriminateur et celle pour le Générateur. \\
+		La théorie des jeux nous donne, d'après \cite{Goodfellow-et-al-2016}, des fonctions qui se basent sur le maximum de vraisemblance (en particulier la Log-likelyhood). Cependant l'expérience montre des limites à ces fonctions, et d'autres suggestions sont faites, par cette article ou par de nombreuses autres publications depuis, pour compenser une par. Il existe en effet de nombreuses fonctions intéressantes ayant les propriétés nécessaire : Monotonie, $\underset{x\rightarrow0}{lim} f(x) = 0 \text{ et } \underset{x\rightarrow 1}{lim} f(x) = +\infty$, le reste laissant la liberté pour les courbures
+
+		\emph{Attention : } J'ai les idées en têtes mais pas encore les bons trucs mathématiques qui vont avec.  
+
+		Le choix d'une fonction de coûts détermine le gradient initial que l'on propage en fonction du résulat du Discriminateur. On peut alors choisir une stratégie d'apprentissage pour le couple Discriminateur/Générateur, en insistant par exemple sur les erreurs grossières du générateur, ou alors en insistant sur ces succès.
+
+		Cela s'illustre bien avec le schéma ci-dessous, représentant différentes fonctions de coûts et les stratégies correspondantes.
+
+		\emph{Inserer ici une reprise des courbes du papier NIPS 2016 de Goodfellow, commentées}
+
+	\paragraph*{Ratios d'apprentissage : } Dans l'aspect jeu de l'apprentissage, on considère que chacun des deux réseaux (Discriminateur et générateur) joue à son tour, en appliquant sa propre stratégie visant à minimiser sa fonction de coûts. Il est possible de changer les règles du jeu et d'autoriser les réseaux à jouer plusieurs coup d'affilé. Cela permet par exemple de déséquilibrer ou rééquilibrer un rapport de force, ou d'augmenter les convergences partielles du systèmes.
+
+	En effet la littérature insiste sur l'équilibre nécéssaire entre les 2 structures pour obtenir le meilleur apprentissage possible. Un Discriminateur trop fort (c'est à dire $D(x) = 1 $ et $ D(G(z)) = 0$ de façon quasi certaines), empêche le générateur de trouver une direction d'apprentissage pertinente. L'idée est que même si le générateur s'approche d'une image réaliste, le Discriminateur lui dira qu'il se trompe. Par ailleurs, un Discriminateur trop faible ne pourrait pas non plus donner d'informations pertinentes au Générateur.
+
+	Le deuxième aspect correspond au fait de faire converger chaque réseau par rapport à l'autre, fixe.
 	\begin{itemize}
-	 	\item Fonctions de coûts
-	 	\item Ratios d'apprentissage
 	 	\item Paramètres classiques des réseaux de neurones (Structures des réseaux, pas d'apprentissage, etc.)
 	\end{itemize}
 
