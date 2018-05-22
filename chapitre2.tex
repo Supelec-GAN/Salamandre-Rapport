@@ -25,7 +25,7 @@
 	La première partie de cette étude nous a permis de maîtriser l'utilisation de réseaux en perceptron et de structurer une architecture logicielle efficace et souple pour l'étude des GAN. \\
 	Après avoir obtenu des résultats satisfaisants dans la classification de motif sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{nips-2014}.\\
 	Notre objectif dans cette partie est d’appréhender le concept de GAN et de l'appliquer sur notre programme afin d'étudier les différents paramètres. 
-\section{Principe}
+\section{Principes}
 	\paragraph{}
 		Le GAN s'inscrit dans les problèmes de générations de données par ordinateurs. Ses modèles cherchent à produire de données nouvelles respectant un certain nombre de contraintes. Les applications possible sont très nombreuses, tant au niveau scientifiques qu'industrielles, avec par exemple la modélisation de nouvelles protéines, le dessin de circuit intégrés, etc. 
 		Le but de nos GAN sera de générer des images que l’on ne pourra distinguer de « vraies » images, prises avec un appareil photo.\\
@@ -54,22 +54,42 @@
 
 	Voici une description des paramètres principaux sur lequel on peut jouer pour l'implémentation d'un GAN. Ils sont nombreux car la description précédente est en réalité peu restrictive.
 
-	\begin{itemize}
-	 	\item Fonctions de coûts
-	 	\item Ratios d'apprentissage
-	 	\item Paramètres classiques des réseaux de neurones (Structures des réseaux, pas d'apprentissage, etc.)
-	\end{itemize}
+	\paragraph*{Fonctions de coût : } 
+		Le premier critère intéressant des GANs est la fonction de coût (Loss Function dans la littérature) utilisé pour l'apprentissage. Il y a en réalité 2 fonctions de coût, celle pour l'apprentissage du Discriminateur et celle pour le Générateur. \\
+		La théorie des jeux nous donne, d'après \cite{Goodfellow-et-al-2016}, des fonctions qui se basent sur le maximum de vraisemblance (en particulier la Log-likelyhood). Cependant l'expérience montre des limites à ces fonctions, et d'autres suggestions sont faites, par cette article ou par de nombreuses autres publications depuis, pour compenser une par. Il existe en effet de nombreuses fonctions intéressantes ayant les propriétés nécessaire : Monotonie, $\underset{x\rightarrow0}{lim} f(x) = 0 \text{ et } \underset{x\rightarrow 1}{lim} f(x) = +\infty$, le reste laissant la liberté pour les courbures
 
+		\emph{Attention : } J'ai les idées en têtes mais pas encore les bons trucs mathématiques qui vont avec.  
+
+		Le choix d'une fonction de coûts détermine le gradient initial que l'on propage en fonction du résulat du Discriminateur. On peut alors choisir une stratégie d'apprentissage pour le couple Discriminateur/Générateur, en insistant par exemple sur les erreurs grossières du générateur, ou alors en insistant sur ces succès.
+
+		Cela s'illustre bien avec le schéma ci-dessous, représentant différentes fonctions de coûts et les stratégies correspondantes.
+
+		\emph{Inserer ici une reprise des courbes du papier NIPS 2016 de Goodfellow, commentées}
+
+	\paragraph*{Ratios d'apprentissage : } 
+
+		Dans l'aspect jeu de l'apprentissage, on considère que chacun des deux réseaux (Discriminateur et générateur) joue à son tour, en appliquant sa propre stratégie visant à minimiser sa fonction de coûts. Il est possible de changer les règles du jeu et d'autoriser les réseaux à jouer plusieurs coup d'affilé. Cela permet par exemple de déséquilibrer ou rééquilibrer un rapport de force, ou d'augmenter les convergences partielles du systèmes.
+
+		En effet la littérature insiste sur l'équilibre nécessaire entre les 2 structures pour obtenir le meilleur apprentissage possible. Un Discriminateur trop fort (c'est à dire $D(x) = 1 $ et $ D(G(z)) = 0$ de façon quasi certaines), empêche le générateur de trouver une direction d'apprentissage pertinente. L'idée est que même si le générateur s'approche d'une image réaliste, le Discriminateur lui dira qu'il se trompe. Par ailleurs, un Discriminateur trop faible ne pourrait pas non plus donner d'informations pertinentes au Générateur.
+
+		Le deuxième aspect consiste, sans déséquilibre cette fois, à augmenter le nombre de coups 	d"affilées des deux réseaux. Comme pour un réseau, il effectue une descente de gradient classique, avec l'autre réseau fixé, cette augmentation consiste à aller plus loin vers une convergence intermédiaire. Par exemple, pour un état $D_f$ fixe du discriminateur, le générateur cherche à converger vers un état $G_c(D_f)$. Dans un cas idéal, une descente de gradient fera effectivement converger $G$ vers $G_c(D_f)$. Ainsi, plus le Générateur va jouer de coup avec un Discriminateur fixe, plus il se rapproche de cette valeur. 
+
+		Il n'est pas du tout évident de connaître l'influence de ses paramètres juste avec du bon sens paysan.
+
+
+	\paragraph*{Paramètres classiques des réseaux de neurones : }
+		L'ensemble des paramètres des réseaux peuvent être choisis, c'est à dire la forme, les types de couches (Fully Connected, Convolution, etc), le pas d'apprentissage (avec optimisation type RMSProp ou non), la forme de l'entrée ou tout autres optimisations existante. \\
+		En effet, la théorie du GAN n'est que très peu restrictive sur ce sujet, et libre à nous de tester les résultats avec les plus diverses paramètres. 
 
 \section{Structure et utilisation du code}
 	{description des modifications importantes pour le GAN (or optimisation du code source)}
 
 
-\section{Premier résultats pour des GANs simples}
+\section{Premiers résultats pour des GANs simples}
 	Afin d'appréhender correctement le fonctionnement des GANs, il est nécessaire de tester de nombreux paramètres. Les résultats, fructueux ou non, permettent d'évaluer l'intérêt des paramètres et de comprendre le sens "physique" de leur influence.\\
 	Ces essais se feront sur la base MNIST, c'est-à-dire que notre objectif sera d'obtenir par le générateur des chiffres manuscrits qu'il aura dessiné par lui-même. Plus précisément on attend du générateur après apprentissage que chaque entrée génère un chiffre entre 0 et 9 qu'un être humain ne peut distinguer d'un chiffre manuscrit écrit par un humain (donc de la base MNIST). De plus, chaque entrée 
 
-	\subsection{Méthodologie initial}
+	\subsection{Méthodologie initiale}
 		L'un des objectifs de ce projet est de décortiquer au mieux la méthode GAN. Pour cela nous utilisons les réseaux de neurones les plus simples, ils seront complexifiés par la suite. La plupart des articles sur le sujet présentent des réseaux utilisant des structures avancés (couche convolutive, optimiseur de descente, etc.) il n'est donc pas possible de se référer aux paramètres de ses articles pour obtenir immédiatement des résultats et s'assurer que notre programme tournent correctement. \\
 		Pour le choix du réseau Discriminateur, le choix se porte sur des structures ayant eu de bonnes performance pour le MNIST, c'est-à-dire soit un très bon taux final, soit une vitesse de convergence élevée. En effet le Discriminateur n'est qu'un simple classificateur sur la base MNIST. Le choix du générateur est plus complexe car il faut que la structure soit assez puissante pour dessiner des chiffres. Cela semble bien plus difficile que simplement les reconnaitre, car ils peuvent être reconnus à l'aide de features très particulières, tandis que la génération exige une information complète. La première idée pour dimensionner le réseau est d'avoir une entrée suffisante pour générer la diversité de sortie souhaité, mais pas nécessairement plus pour ne pas avoir un réseau trop lourd en calcul.\\
 		Pour les autres paramètres, aucune idée précise de leurs ordre de grandeur nécessaire, en particulier le pas d'apprentissage (très différents pour MNIST et XOR par exemple).\\
@@ -82,7 +102,7 @@
 
 {Le mode collapse aura été présenté à la section d'avant, tentative d'explication de pourquoi on en sort avec le bruit}
 
-\section{Résultat sans collapse}
+\section{Résultats sans collapse}
 {même chose que la section premiers résultats, mais avec le bruit en entrée}
 
 % Fin du chapitre, les autres améliorations seront dans d'autres chapitres.
