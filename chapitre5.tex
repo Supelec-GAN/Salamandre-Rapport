@@ -19,13 +19,32 @@
 
 \chapter{Axes de Recherches : WGAN}
 
-\paragraph*{Introduction : } Avec les différents résultats obtenus par nos premiers GAN, nous avons pu tirer, entre autres, deux conclusions importantes. Le GAN manque cruellement de stabilité, par exemple un petit changement de paramètre l'empêche de converger correctement), et de métriques pertinentes, c'est à dire que les scores des générateurs et des discriminateurs n'ont pas d'interprétations en termes de progrès de la qualité d'image perçus.\\
+\paragraph*{Introduction : } Avec les différents résultats obtenus par nos premiers GAN, nous avons pu tirer, entre autres, deux conclusions importantes. Le GAN manque cruellement de stabilité, (par exemple un petit changement de paramètre l'empêche de converger correctement), et de métriques pertinentes, c'est à dire que les scores des générateurs et des discriminateurs n'ont pas d'interprétations en termes de progrès de la qualité d'image perçue.\\
 Les chercheurs se sont beaucoup attardés depuis 2016 sur la première question, en comparant par exemple les différents optimiseurs possible \cite{optimiser}, le deuxième point est moins souvent abordés. \\
-L'article de 2017  Wassert\cite{wgan} propose une méthode qui, en s'éloignant légèrement de la philosophie original du papier \cite{Goodfellow-et-al-2016}, tente d'apporter une réponse à ces deux questions, en particulier une métrique pertinente.
+L'article de 2017 Wasserstein GAN \cite{wgan} propose une méthode qui, en s'éloignant légèrement de la philosophie original du papier de Goodfellow \cite{Goodfellow-et-al-2016}, tente d'apporter une réponse à ces deux questions, avec en particulier une métrique pertinente.
 
 \section{Problématique de la descente de gradient simultanée}
 
+L'article de Goodfellow semble démontrer la convergence du système GAN, cependant la mise en œuvre montre que cette convergence n'est pas aussi évidente à obtenir. En effet, il semblerait que la stratégie de descente de gradient de l'algorithme de GAN ne permettent pas d'assurer cette convergence. Le blog inFERENCe \cite{conservative-field} décrit une partie du problème en se basant sur l'article The Numerics of GANs \cite{numerics-gan}.
+
+Ces articles montrent que la descente de gradient simultanée n'est pas simplement une double descente de gradient, mais une descente de gradient dans un champ vectoriel. l'algorithme de GAN effectue l'optimisation suivante : 
+\[x_{t+1} \leftarrow x_t + h v(x_t) \text{ avec } v(x) = \left(\begin{matrix}\frac{\partial}{\partial\theta}f(\theta, \phi)\\\frac{\partial}{\partial\phi}g(\theta, \phi)\end{matrix}\right).\]
+
+$f$ et $g$ étant respectivement les fonctions de coût du Discriminateur et du Générateur. Cependant on constate 2 problèmes, d'une part l'algorithme basé sur la théorie des jeux, qui consiste à faire "jouer" tour à tour le Discriminateur et le Générateur pour optimiser ses paramètres ne consiste qu'en une approximation de la simultanéité de la descente, d'autre part il n'y a aucune preuve que le champ vectoriel $x$ dans lequel l'on se déplace possède des propriétés conservatives. En particulier rien ne garantie que le rotationnel soit nul, ce qui implique que la descente de gradient ne soit pas garantie d'aller vers un minimum, même local !
+
+% insérér gif ou screen de la descente qui tourne en rond
+
+On est donc à la recherche d'une autre approche qui contournerait ce problème.
+
+
+
 \section{L'approche Wasserstein GAN}
+
+Le papier Wasserstein GAN \cite{arjovsky_wasserstein_2017}, propose une autre approche que celle de la théorie des jeux.
+
+Il s'agit de calculer une divergence entre distribution afin de se servir de cette métrique pour faire l'apprentissage de l'une sur l'autre. Au premier abord cette approche ne semble pas si différente de l'approche de Goodfellow, mais elle en est sensiblement différente. Dans l'approche précédente, l'on tente de minimiser la divergence entre deux distribution par un algorithme utilisant 2 réseaux de neurones, cependant, nous n'avons jamais accès à cette divergence (que l'on utilise des fonctions d'erreur pour approcher la KL-divergence ou une autre), et comme nous l'avons montré précédemment la convergence n'est pas réellement assurée. 
+
+L'idée du papier Wasserstein GAN est de calculer explicitement une divergence entre deux ensemble. Cela n'est pas une question simple, comme nous avons pu le voir au chapitre 1. En effet nous n'avons généralement pas accès à la distribution $p_{\text{réel}}$ mais uniquement à un échantillon tiré de cette distribution. \\ Cependant il apparait possible de calculer une divergence entre deux ensemble à l'aide des réseaux de neurones. Cela est possible en tout cas 
 
 \section{Mise en œuvre}
 
