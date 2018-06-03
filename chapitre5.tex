@@ -59,12 +59,50 @@ On ne peut toujours pas se servir de cette divergence, mais un théorème (la du
 W(\mathbb{P}_r, \mathbb{P}_g) = \underset{||f||_L<1}{\text{sup}}\mathbb{E}_{x\sim\mathbb{P}_r}\left[f(x)\right] - \mathbb{E}_{x\sim\mathbb{P}_g}\left[f(x)\right]
 \]
 Vous pouvez en voir une preuve simplifié sur le blog de Vincent Hermann \cite{preuve-wgan}
-On se retrouve alors à calculer un sup sur un ensemble de fonction (les fonctions 1-Lipschitziennes), et cela est pratique car c'est justement ce que permet de faire un réseau de neurones : Simuler des fonctions que l'on optimise par rapport à un paramètre ! Il ne reste qu'à s'assurer que les réseaux de neurones peuvent garantir le caractère 1-Lipschitzien.
+On se retrouve alors à calculer un sup sur un ensemble de fonction (les fonctions 1-Lipschitziennes), et cela est pratique car c'est justement ce que permet de faire un réseau de neurones : Simuler des fonctions que l'on optimise par rapport à un paramètre ! On construit un réseau qui joue le rôle des fonctions f, on a donc des paramètres $W$ à optimiser pour trouver la valeur maximum. Il ne reste qu'à s'assurer que les réseaux de neurones peuvent garantir le caractère 1-Lipschitzien.
 
-Une méthode pour s'assurer de cette propriété est de restreindre les poids dans un intervalle [-c, c] (on parle de weight-clipping). Cependant on obtient un caractère K-Lipschitzien, avec un K inconnu. (En terme de preuve, il suffit de voir que des matrice avec ses propriétés sont toutes K-Lipschitziennes avec un même K.) cela nous assure que l'on peut calculer non pas $W(\mathbb{P}_r, \mathbb{P}_g)$ mais $K*W(\mathbb{P}_r, \mathbb{P}_g)$, mais le K étant fixe tout au long de l'apprentissage cela reste une métrique pertinente.
+Une méthode pour s'assurer de cette propriété est de restreindre les poids dans un intervalle [-c, c] (on parle de weight-clipping). Cependant on obtient un caractère K-Lipschitzien, avec un K inconnu. (En terme de preuve, il suffit de voir que des matrice avec ses propriétés sont toutes K-Lipschitziennes avec un même K.) cela nous assure que l'on peut calculer non pas $W(\mathbb{P}_r, \mathbb{P}_g)$ mais $K*W(\mathbb{P}_r, \mathbb{P}_g)$, mais le K étant fixe tout au long de l'apprentissage cela reste une métrique pertinente. 
 
 Nous avons donc la possibilité avec un réseau de neurone de calculer la métrique de Wasserstein et nous allons pouvoir nous en servir pour l'apprentissage d'un générateur
 
 \section{Mise en œuvre}
 
-\section{Réflexion sur l'approche}
+Fort de cette métrique que l'on peut calculer, nous allons pouvoir mettre en place un algorithme d'apprentissage pour la génération d'image.
+
+Tout d'abord nous avons toujours besoin de deux réseaux, l'un pour la génération, dont le rôle est strictement identique au générateur qui on pu être vu avant, et l'autre pour le calcul de la divergence de Wasserstein. Ce second réseau est appelé critique (plutôt que Discriminateur) par la littérature. Attention, le critique simule une fonction $f$ qui est telle que $\mathbb{E}_{x\sim\mathbb{P}_r}[f(x)] - \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $ soit la sortie d'un batch contenant des vrais images et des images de synthèses, c'est à dire que $f(x)$ et $f(G(z))$ n'ont pas de sens contrairement aux $D(x)$ et $D(G(z))$ vu précédemment. 
+Afin que le critique calcule effectivement $W(\mathbb{P}_r, \mathbb{P}_g)$, il est nécessaire de faire converger les paramètres du critique pour obtenir $f_{\text{max}}$. Une fois $W(\mathbb{P}_r, \mathbb{P}_g)$ obtenu, on peut chercher à le minimiser pour faire progresser le générateur, on effectue donc une descente de gradient à partir de ce coût. Cependant on a en fait $f_{\text{max}}(\mathbb{P}_r, \mathbb{P}_g, x)$, c'est à dire que $f_max$ dépend des distributions à un instant donné, par conséquent après une itération on obtient:
+ \[\mathbb{E}_{x\sim\mathbb{P}_r}[f_\text{max}((\mathbb{P}_r, \mathbb{P}_g), x)] - \mathbb{E}_{x\sim\left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)}[f_\text{max}((\mathbb{P}_r, \mathbb{P}_g), x)] \]
+
+Ce qui est différent de :
+ \[ \mathbb{E}_{x\sim\mathbb{P}_r}[f_\text{max}((\mathbb{P}_r, \left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)), x)] - \mathbb{E}_{x\sim \mathbb{P}_g}[f_\text{max}((\mathbb{P}_r, \left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)), x)] = W(\mathbb{P}_r, \mathbb{P}_g+\Delta\mathbb{P}_g)\]
+
+ Il faut donc à chaque itération refaire converger le critique pour garantir que l'on a bien la fonction $f_max$ correspondant à la distribution $\mathbb{P}_g$ courante (on a en effet $\mathbb{P}_r$ fixe tout du long).
+
+ L'algorithme se dessine alors simplement :
+ \begin{itemize}
+ \item Faire converger le critique en maximisant la quantité $\mathbb{E}_{x\sim\mathbb{P}_r}[f(x)] - \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $
+ \subitem - Récuperer un batch d'images réelles
+ \subitem - Générer une batch d'images virtuelles
+ \subitem - Calculer $\mathbb{E}_{x\sim\mathbb{P}_r}[f(x)] - \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $
+ \subitem - Rétro-propager dans le critique
+ \subitem - Recommencer jusqu'à convergence
+ \item Faire évoluer le générateur en minimisant la quantité $\mathbb{E}_{x\sim\mathbb{P}_r}[f(x)] - \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $
+ \subitem - Générer un batch d'images virtuelles
+ \subitem - Calculer $- \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $
+ \subitem - Il n'est pas nécessaire d'effectuer le calcul pour de vrais images, car elles ne servent pas dans la retro-propagation dans le générateur
+ \subitem - Rétro-propager dans le critique sans le modifier
+ \subitem - Rétro-propager dans le générateur
+ \item Recommencer les 2 étapes jusqu'à convergence du générateur
+ \end{itemize}
+
+ On notera dans cette algorithme deux zones floues qui sont les ré-itération "Jusqu'à la convergence". En effet il est particulièrement difficile de s'assurer qu'on a bien converger, ou plutôt de savoir que l'on a converger suffisamment. Comme dans tout les algorithmes de se genre, il y a un trade-off entre le temps de calcul, et une précision parfaite.
+
+ Pour la convergence du critique, l'article Wasserstein \cite{arjovsky_wasserstein_2017} suggère de le faire converger de façon certaine au début, i.e, de s'assurer que l'on calcule bien $W ( \mathbb{P}_r, \mathbb{P}_g ) $ avec $\mathbb{P}_g$ étant du bruit avant tout apprentissage. Pour cela on effectue longuement la première étape avant toutes choses. Puis on peut estimer qu'une itération de descente de gradient sur le générateur change peu se dernier, et par une hypothèse de continuité sur la distance de Wasserstein (qui semble justifié si l'on considère cette distance comme la distance Earth-Mover) on peut estimer qu'il faudra peut d'itération de montée de gradient pour faire de nouveau converger "suffisamment" le critique.
+
+ Pour la convergence du générateur, on en revient aux problèmes classiques du GAN qui consiste à se demander à quelle moment le générateur est suffisamment performant, on y reviendra dans la partie suivante.
+
+ \section{Réflexion sur l'approche}
+
+ \subsection{Utilisation de la distance de Wasserstein pour évaluer un générateur}
+ \subsection{Problème du caractère Lipschitziens des réseaux de neurones}
+ \subsection{Peut-on adapter la logique de cette algorithme à d'autre méthode ?}
