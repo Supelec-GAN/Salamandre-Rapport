@@ -18,8 +18,7 @@
 % \ref(figure à référencer)
 
 \chapter{Introduction aux réseaux de neurones et premières applications}
-
-Le première partie de ce projet a pour but de comprendre le fonctionnement des réseaux de neurones et leurs applications à la classification. On mettre également en place une structure informatique en python pour les utiliser.
+Le première partie de ce projet a pour but de comprendre le fonctionnement des réseaux de neurones et leurs applications à la classification. Une structure informatique en python pour les utiliser sera également mise en place.
 
 \section{Outils utilisés pour le projet}
 
@@ -29,31 +28,34 @@ Ce projet possède une dimension de conception logiciel. Il s'agit de programmer
 \section{Réseaux de neurones et fonctionnement}
 
 
-Les réseaux de neurones font partis des piliers de l'intelligence artificielle. Leur fonctionnement est basé sur une interprétation sommaire du cerveau humain. Des neurones seules reçoivent des signaux, les traitent et renvoient un signal de sortie. Les neurones sont alors agrégés en réseaux avec des entrées du réseaux et des sorties. On modélise la plasticité du cerveaux par des paramètres variables qui changent au cours de l'apprentissage, ce dernier se faisant en comparant des sorties attendues aux sorties obtenues.
+Les réseaux de neurones font partis des piliers de l'intelligence artificielle. Leur fonctionnement est basé sur une interprétation sommaire du cerveau humain. Des neurones seuls reçoivent des signaux, les traitent et renvoient un signal de sortie. Les neurones sont alors agrégés en un réseau avec des entrées et des sorties globales. On modélise la plasticité du cerveaux par des paramètres variables qui changent au cours de l'apprentissage, ce dernier se faisant en comparant des sorties attendues aux sorties obtenues.
+
+Les réseaux ainsi obtenus et entrainés sont donc des fonctions. L'apprentissage permet aux réseaux d'approcher les fonctions que nous souhaitons. L'objectifs est d'approcher des fonctions qui ne sont pas facilement réalisable avec des fonctions usuelles. Par exemple il est très difficile de définir la fonction indicatrices des chiffres manuscrits, alors qu'un réseau est capable de le faire.
 
 \subsection{Le neurone} % (fold)
 \label{sub:le_neurone}
-L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique. Lui sont attribuées n entrées, chacune affectée d’un poids $w_i$ et une fonction mathématique de $\R$ dans $\R$. Le rôle du neurone sera de renvoyer le résultat de la fonction, appliquée à la somme pondérée par le poids des entrées. On pourrait ajouter un biais comme paramètre de notre neurone afin d’ajuster notre résultat (choisir quand une fonction seuil renvoie 1 par exemple).
+L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique $F$. il possède $n$ entrées (ou plutôt un vecteur $X$ de dimension $n$), chacune affectée d’un poids $w_i$ (on a donc un vecteur de poids $w$, et une fonction mathématique de $\R$ dans $\R$ non linéaire dites fonction d'activation $\sigma$. Le rôle du neurone sera de renvoyer la somme des entrées pondérée par leurs poids respectifs, somme à laquelle on applique la fonction d'activation, on a $F(x) = \sigma(w^T x)$. On peut ajouter un biais $b$ comme paramètre de notre neurone qui permet de donner un aspect affine au calcul : $F(x) = \sigma(w^T x + b)$
 
 Un exemple simple du réseau de neurones est la séparation d’un plan en deux.\\
 Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside par exemple).\\
-Notre neurone renverra : 1 si $(e_1*w_1+e_2*w_2) - b >0$ et 0 sinon.
+Notre neurone renverra : 1 si $(e_1w_1+e_2w_2) - b >0$ et 0 sinon.
 
 Si les $e_1$ et $e_2$ représentent les abscisses et ordonnées d’un point du plan, on reconnaît dans l’argument de la fonction d’activation l’équation d’une droite affine. Notre neurone pourra donc distinguer les points du plan selon le côté de la droite où ils se trouvent.
 
-On peut déjà voir qu’une modification des poids entraînera une différente délimitation du plan. On peut donc imaginer faire « apprendre » au réseau quels points délimiter en modifiant ses poids. Nous reviendrons sur ce concept par la suite.\\
+On peut déjà voir qu’une modification des poids entraînera une délimitation différente du plan. On peut donc imaginer faire « apprendre » au réseau une délimitation choisi en modifiant ses poids. Nous reviendrons sur ce concept par la suite.\\
 Cependant, les applications d’un neurone seul sont vite limitées. C’est pourquoi on va s’intéresser à en connecter plusieurs entre eux.
 
 \subsection{Réseau de neurones et perceptron} % (fold)
 \label{sub:reseau_de_neurones}
 On a déjà vu que le neurone se prêtait bien à une séparation binaire des données. On va voir que l’organisation de neurones en réseau permet de meilleures classifications.\\
-L’organisation du réseau se fera au moyen de couches de neurones. 
-Dans les structures les plus basiques, la sortie d'une couche est utilisée comme l'entrée de la couche suivante. On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures.
-On appelle la dernière couche, celle qui donne le résultat du réseau de neurones, la couche de sortie; et la première couche où l'on donne les entrées est appelée couche d'entrée. Les autres couches sont appelées des couches cachées. Cette appellation vient du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés. En effet, avec la seule donnée de la sortie, l’influence des poids des couches cachées sur celle-ci n'est pas évidente.
+L’organisation du réseau se fera au moyen de couches de neurones. Une couche est un ensemble de neurones possédant les mêmes entrées, cette couche aura alors plus d'une sortie, ce qui permet de généraliser aux sorties vectorielles le concept du neurones seules. En ayant ainsi une sortie vectorielle, on peut utiliser les sorties d'une couche en tant qu'entrée d'une autre couche, ce qui complexifie encore les fonctions possiblement décrites par les neurones.
+On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures. On peut en réalité construire le graphe de neurones que l'on veut, mais dans la pratique, seule certaines structures sont utilisés. 
+
 
 Le perceptron est un modèle de réseau de neurones auquel on va s’intéresser particulièrement.Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
 L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.
 
+On appelle la dernière couche, celle qui donne le résultat du réseau de neurones, la couche de sortie; et la première couche où l'on donne les entrées est appelée couche d'entrée. Les autres couches sont appelées des couches cachées. Cette appellation vient du fait qu’a priori, nous n’avons aucun moyen de voir ou de corriger les comportements des neurones cachés. En effet, avec la seule donnée de la sortie, l’influence des poids des couches cachées sur celle-ci n'est pas évidente. C'est ce que nous allons étudier dans la partie suivante. 
 % subsection reseau_de_neurones (end)
 
 
