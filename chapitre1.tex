@@ -66,24 +66,26 @@ On appelle la dernière couche, celle qui donne le résultat du réseau de neuro
 \subsection{Apprentissage par rétro-propagation}
 
 Il existe plusieurs types d'apprentissages du réseau. Les deux grandes catégories sont l'apprentissage supervisé et l'apprentissage non supervisé. 
-Dans le cadre du perceptron, nous utilisons seulement un apprentissage supervisé, la rétro-propagation des erreurs. Un apprentissage supervisé nécessite une base d'apprentissage à enseigner au réseau. Elle est composée d'associations entre entrées et sorties voulues. Le réseau déduira de cette base les autres cas qu'on ne lui aura pas appris. 
+Un apprentissage supervisé nécessite une base d'apprentissage à enseigner au réseau. Elle est composée d'associations entre entrées et sorties voulues. Le réseau déduira de cette base les autres cas qu'on ne lui aura pas appris. Une apprentissage non supervisé ne nécessite pas une telle base d'apprentissage.
 
-La rétro-propagation consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence.
+Dans le cadre du perceptron, nous utilisons un apprentissage supervisé, la rétro-propagation des erreurs. Il s'agit en fait d'effectuer une descente de gradient. Nous avons notre réseaux qui représente $F$ une fonction, cette fonction dépend de nombreux paramètres qui sont les poids $W$ de tous les neurones de toutes les couches (ainsi que les biais). Lorsque l'on veut faire tendre $F$ vers une fonction $G$, et que l'on peut avoir une distance entre ces deux fonctions, on obtient alors un problème de minimisation, avec pour paramètres d'optimisation les poids $W$. L'algorithme de descente de gradient consiste à calculer pour chaque paramètre le gradient par rapport à la sortie (c'est une descente de Newton quand on est à une dimension) afin de déplacer ce paramètre dans la bonne direction pour minimiser la sortie.
+
+Comme dit précédemment, on a pas facilement accès aux couches cachées, et il parait très couteux d'opter pour des calcules de dérivées discrète pour obtenir les gradients voulus pour tout les paramètres.
+La rétro-propagation consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence. On a vu que les couches de neurones avaient leurs propres sorties, on peut donc calculer l'influence des poids d'une couche sur sa sortie propre, puis s'en servir pour calculer l'influence sur les entrées, qui sont la sortie d'une couche précédente, on procède comme suit : 
 
 Les paramètres que l’on fait évoluer sont les poids et les biais.
 La formule de mise à jour est la suivante :
-
 \[
 W(t+1) = W(t) + \eta \frac{\partial E}{\partial W} 
 \]
-avec $\eta$ le pas de convergence, $\frac{\partial E}{\partial W} $ la matrice de terme général $\frac{\partial E}{\partial W_{i,j}} $\\
+avec $\eta$ le pas de convergence, $\frac{\partial E}{\partial W} $ la matrice de terme général $\frac{\partial E}{\partial W_{i,j}} $.\\
 Pour pouvoir mettre à jour les poids, il faut donc calculer les $\frac{\partial E}{\partial W_{i,j}} $.\\
 A la couche $k$ l'influence des poids est donnée par : 
 \[
 	\frac{\partial E^p}{\partial W _k} = \frac{\partial F}{\partial W}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
 \]
 
-Avec $\frac{\partial F}{\partial W}(W_k, X_{k-1})$ la matrice jacobienne de F par rapport à la variable $W_k$
+Avec $\frac{\partial F}{\partial W}(W_k, X_{k-1})$ la matrice jacobienne de F par rapport à la variable $W_k$.
 
 Pour pouvoir calculer l'influence des poids de toutes les couches, il faut donc calculer $\frac{\partial E^p}{\partial W_k}$
 
@@ -112,6 +114,8 @@ En forme matricielle, ces équations donnent :
 \frac{\partial E^p}{\partial W_k}&= X^T_{k-1} \frac{\partial E^p}{\partial Y_k}\\
 \frac{\partial E^p}{\partial X_{k-1}} &= W_k^T\frac{\partial E^p}{\partial X_k}
 \end{align*}
+
+On obtient donc une formule de récurrence que l'on doit propager de la dernière couche à la première couche (d'où le terme rétro-propagation). On sait donc maintenant mathématiquement faire l'apprentissage d'un perceptron : ils nous faut des données connus, une fonction d'erreur (appelée Loss Function dans la littérature), et appliquer cet algorithme.
 
 
 \section{Conception logicielle des réseaux de neurones}
