@@ -22,19 +22,19 @@ Le première partie de ce projet a pour but de comprendre le fonctionnement des 
 
 \section{Outils utilisés pour le projet}
 
-Ce projet possède une dimension de conception logicielle. Il s'agit de programmer sans utiliser de bibliothèques existantes des réseaux de neurones efficaces et performants adaptés aux problèmes que nous souhaitons résoudre.\\
-Étant donné l'évolution prévu de notre code, perceptron simple pour XOR ou  MNIST, puis mise en place du GAN, et enfin toute sortes d'améliorations utiles, nous devons être particulièrement vigilant sur la souplesse de notre code. La programmation en équipe, sur une longue durée et avec de telles contraintes nécessitent la mise en place d'outils et certains choix techniques.
+Ce projet possède une dimension de conception logicielle. Il s'agit de programmer des réseaux de neurones efficaces et performants adaptés aux problèmes que nous souhaitons résoudre sans utiliser de bibliothèques existantes.\\
+Étant donné l'évolution prévue de notre code (du perceptron simple pour les problèmes de XOR ou du MNIST, puis la mise en place du GAN, et enfin toute sortes d'améliorations utiles), nous devons être particulièrement vigilants sur la souplesse de notre code. La programmation en équipe, sur une longue durée et avec de telles contraintes, nécessite la mise en place d'outils et certains choix techniques.
 
 \section{Réseaux de neurones et fonctionnement}
 
 
-Les réseaux de neurones font partie des piliers de l'intelligence artificielle. Leur fonctionnement est basé sur une interprétation sommaire du cerveau humain. Des neurones seuls reçoivent des signaux, les traitent et renvoient un signal de sortie. Les neurones sont alors agrégés en un réseau avec des entrées et des sorties globales. On modélise la plasticité du cerveaux par des paramètres variables qui changent au cours de l'apprentissage, ce dernier se faisant en comparant des sorties attendues aux sorties obtenues.
+Les réseaux de neurones font partie des piliers de l'intelligence artificielle. Leur fonctionnement est basé sur une interprétation sommaire du cerveau humain. Des neurones seuls reçoivent des signaux, les traitent et renvoient un signal de sortie. Les neurones sont alors agrégés en un réseau avec des entrées et des sorties globales. On modélise la plasticité du cerveaux par des paramètres variables qui changent au cours de l'apprentissage. Celui-ci se fait en comparant les sorties de notre réseau aux résultats attendus.
 
-Les réseaux ainsi obtenus et entrainés sont donc des fonctions. L'apprentissage permet aux réseaux d'approcher les fonctions que nous souhaitons. L'objectifs est d'approcher des fonctions qui ne sont pas facilement réalisables avec les moyens usuels. Par exemple il est très difficile de définir la fonction indicatrices des chiffres manuscrits, alors qu'un réseau neuronal est capable de le faire.
+Les réseaux ainsi obtenus et entrainés sont donc des fonctions. L'apprentissage permet aux réseaux d'approcher les fonctions que nous souhaitons. L'objectif est d'approcher des fonctions qui ne sont pas facilement réalisables avec les moyens usuels. Par exemple, il est très difficile de définir la fonction indicatrice des chiffres manuscrits alors qu'un réseau neuronal est capable de le faire.
 
 \subsection{Le neurone} % (fold)
 \label{sub:le_neurone}
-L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique $F$. il possède $n$ entrées (ou plutôt un vecteur $X$ de dimension $n$), chacune affectée d’un poids $w_i$ (on a donc un vecteur de poids $w$, et une fonction mathématique de $\R$ dans $\R$ non linéaire dites fonction d'activation $\sigma$. Le rôle du neurone sera de renvoyer la somme des entrées pondérées par leurs poids respectifs, somme à laquelle on applique la fonction d'activation, on a $F(x) = \sigma(w^T x)$. On peut ajouter un biais $b$ comme paramètre de notre neurone qui permet de donner un aspect affine au calcul : $F(x) = \sigma(w^T x + b)$
+L’unité de base du réseau est le neurone, on peut l’imaginer comme une fonction mathématique $F$. Il possède $n$ entrées (ou plutôt un vecteur $X$ de dimension $n$), chacune affectée d’un poids $w_i$ (on a donc un vecteur de poids $w$, et une fonction mathématique de $\R$ dans $\R$ non linéaire dite fonction d'activation $\sigma$. Le rôle du neurone sera de renvoyer le résultat de la fonction d'activation appliquée à la somme des entrées pondérées par leurs poids respectifs : on a $F(x) = \sigma(w^T x)$. On peut ajouter un biais $b$ comme paramètre de notre neurone, ce qui permet de donner un aspect affine au calcul : $F(x) = \sigma(w^T x + b)$
 
 Un exemple simple du réseau de neurones est la séparation d’un plan en deux.\\
 Imaginons un neurone à deux entrées $e_1$ et $e_2$, chacune attribuée d’un poids $w_1$ et $w_2$. On affecte au neurone un biais $b$ et une fonction d’activation seuil (Heavyside par exemple).\\
@@ -48,8 +48,8 @@ Cependant, les applications d’un neurone seul sont vite limitées. C’est pou
 \subsection{Réseau de neurones et perceptron} % (fold)
 \label{sub:reseau_de_neurones}
 On a déjà vu que le neurone se prêtait bien à une séparation binaire des données. On va voir que l’organisation de neurones en réseau permet de meilleures classifications.\\
-L’organisation du réseau se fera au moyen de couches de neurones. Une couche est un ensemble de neurones possédant les mêmes entrées, cette couche aura alors plus d'une sortie, ce qui permet de généraliser aux sorties vectorielles le concept du neurones seules. En ayant ainsi une sortie vectorielle, on peut utiliser les sorties d'une couche en tant qu'entrée d'une autre couche, ce qui complexifie encore les fonctions possiblement décrites par les neurones.
-On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures. On peut en réalité construire le graphe de neurones que l'on veut, mais dans la pratique, seule certaines structures sont utilisés. 
+L’organisation du réseau se fera au moyen de couches de neurones. Une couche est un ensemble de neurones possédant les mêmes entrées. Cette couche aura alors plus d'une sortie (une par neurone dans la couche), ce qui permet de généraliser aux sorties vectorielles le concept du neurone seul. En ayant ainsi une sortie vectorielle, on peut utiliser les sorties d'une couche en tant qu'entrée d'une autre couche, ce qui complexifie encore les fonctions possiblement décrites par les neurones.
+On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures. On peut en réalité construire le graphe de neurones que l'on veut, mais, dans la pratique, seules certaines structures sont utilisés. 
 
 
 Le perceptron est un modèle de réseau de neurones auquel on va s’intéresser particulièrement. Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
@@ -68,9 +68,9 @@ On appelle la dernière couche, celle qui donne le résultat du réseau de neuro
 Il existe plusieurs types d'apprentissages du réseau. Les deux grandes catégories sont l'apprentissage supervisé et l'apprentissage non supervisé. 
 Un apprentissage supervisé nécessite une base d'apprentissage à enseigner au réseau. Elle est composée d'associations entre entrées et sorties voulues. Le réseau déduira de cette base les autres cas qu'on ne lui aura pas appris. Une apprentissage non supervisé ne nécessite pas une telle base d'apprentissage.
 
-Dans le cadre du perceptron, nous utilisons un apprentissage supervisé, la rétro-propagation des erreurs. Il s'agit en fait d'effectuer une descente de gradient. Nous avons notre réseaux qui représente $F$ une fonction, cette fonction dépend de nombreux paramètres qui sont les poids $W$ de tous les neurones de toutes les couches (ainsi que les biais). Lorsque l'on veut faire tendre $F$ vers une fonction $G$, et que l'on peut avoir une distance entre ces deux fonctions, on obtient alors un problème de minimisation, avec pour paramètres d'optimisation les poids $W$. L'algorithme de descente de gradient consiste à calculer pour chaque paramètre le gradient par rapport à la sortie (c'est une descente de Newton quand on est à une dimension) afin de déplacer ce paramètre dans la bonne direction pour minimiser la sortie.
+Dans le cadre du perceptron, nous utilisons un apprentissage supervisé, la rétro-propagation des erreurs. Il s'agit en fait d'effectuer une descente de gradient. Nous avons notre réseau qui représente $F$ une fonction, cette fonction dépend de nombreux paramètres qui sont les poids $W$ de tous les neurones de toutes les couches (ainsi que les biais). Lorsque l'on veut faire tendre $F$ vers une fonction $G$, et que l'on peut avoir une distance entre ces deux fonctions, on obtient alors un problème de minimisation, avec pour paramètres d'optimisation les poids $W$. L'algorithme de descente de gradient consiste à calculer pour chaque paramètre le gradient par rapport à la sortie (c'est une descente de Newton quand on est à une dimension) afin de déplacer ce paramètre dans la bonne direction pour minimiser la sortie.
 
-Comme dit précédemment, on a pas facilement accès aux couches cachées, et il parait très couteux d'opter pour des calcules de dérivées discrètes pour obtenir les gradients voulus pour tout les paramètres.
+Comme dit précédemment, on n'a pas facilement accès aux couches cachées, et il parait très coûteux d'opter pour des calculs de dérivées discrètes pour obtenir les gradients voulus pour tous les paramètres.
 La rétro-propagation consiste à calculer l’influence de chaque paramètre sur la sortie et à les mettre à jour en fonction de cette influence. On a vu que les couches de neurones avaient leurs propres sorties, on peut donc calculer l'influence des poids d'une couche sur sa sortie propre, puis s'en servir pour calculer l'influence sur les entrées, qui sont la sortie d'une couche précédente, on procède comme suit : 
 
 Les paramètres que l’on fait évoluer sont les poids et les biais.
@@ -94,7 +94,7 @@ On peut calculer par récurrence cette valeur pour toutes les couches.
 	\frac{\partial E^p}{\partial X _{k-1}} = \frac{\partial F}{\partial X}(W_k, X_{k-1})\frac{\partial E^p}{\partial X_k}
 \]
 
-Avec $\frac{\partial F}{\partial X }(W_k, X_{k-1})$ la matrice jacobienne de $F$ par rapport à la variable $X_k$. De plus, dans un perceptron on peut noter la sortie de la couche $k$ : 
+Avec $\frac{\partial F}{\partial X }(W_k, X_{k-1})$ la matrice jacobienne de $F$ par rapport à la variable $X_k$. De plus, dans un perceptron, on peut noter la sortie de la couche $k$ : 
 \[
 Y_k = W_k X_k \]
 \[
@@ -115,7 +115,7 @@ En forme matricielle, ces équations donnent :
 \frac{\partial E^p}{\partial X_{k-1}} &= W_k^T\frac{\partial E^p}{\partial X_k}
 \end{align*}
 
-On obtient donc une formule de récurrence que l'on doit propager de la dernière couche à la première couche (d'où le terme rétro-propagation). On sait donc maintenant mathématiquement faire l'apprentissage d'un perceptron : ils nous faut des données connues, une fonction d'erreur (appelée Loss Function dans la littérature), et appliquer cet algorithme.
+On obtient donc une formule de récurrence que l'on doit propager de la dernière couche à la première couche (d'où le terme rétro-propagation). On sait donc maintenant mathématiquement faire l'apprentissage d'un perceptron : il nous faut des données connues, une fonction d'erreur (appelée Loss Function dans la littérature), et appliquer cet algorithme.
 
 
 \section{Conception logicielle des réseaux de neurones}
@@ -134,7 +134,7 @@ Vous pouvez retrouver les codes sur https://github.com/Supelec-GAN/Salamandre-XO
 
 Afin de pouvoir implémenter facilement les calculs matriciels obtenus plus tôt, nous définissons notre plus bas niveau d'intelligence par une classe NeuronLayer représentant une couche de neurone. \\
 
-Une couche de neurones est définie par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation_function$, nécessairement commune à tout les neurones dans cette structure.
+Une couche de neurones est définie par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation_function$, nécessairement commune à tous les neurones dans cette structure.
 
 \paragraph{Présentation des méthodes} % (fold)
  \label{par:presentatation_des_methodes}
@@ -164,7 +164,7 @@ C'est en se basant sur la résolution du XOR que nous avons construit notre stru
 \label{par:notion_de_resultats}
 La notion de résultats nécessite d'être correctement définie afin de pouvoir être interprétée correctement, en particulier pour la comparaison à d'autres résultats obtenus par nous-même ou par d'autres personnes. \\
 La structure de perceptron sous cette forme classe les objets que l'on donne en entrée. Généralement, le résultat est défini par rapport à un pourcentage de succès dans cette classification. Pour l'obtenir, on commence par définir une erreur relative, c'est-à-dire une distance entre la sortie cible et la sortie obtenue. Un seuil est alors appliqué afin de définir une sortie booléenne de la classification de l'entrée.\\
-Dans le cas du XOR on met en place un seuil de 0.5, c'est à dire que, si l'erreur est inférieure à 50\%, le réseau a raison. Cela peut s’interpréter comme suit : le réseau donne un résultat qui indique sa confiance dans la sortie. 1 ou 0 si il est certain que la sortie doit être 1 ou 0, 0.5 si il ne peut départager l'un ou l'autre, le seuil consiste à dire que sa réponse est celle en qui il a le plus confiance.\
+Dans le cas du XOR, on met en place un seuil de 0.5, c'est à dire que, si l'erreur est inférieure à 50\%, le réseau a raison. Cela peut s’interpréter comme suit : le réseau donne un résultat qui indique sa confiance dans la sortie. 1 ou 0 si il est certain que la sortie doit être 1 ou 0, 0.5 si il ne peut départager l'un ou l'autre, le seuil consiste à dire que sa réponse est celle en qui il a le plus confiance.\
 On cherche également à évaluer la vitesse d'apprentissage. Ainsi, on calcule le pourcentage de succès du réseau à intervalles réguliers au cours de l'apprentissage. Les réseaux étant soumis à une forte composante aléatoire (l'ordre d'apprentissage, ainsi que l'initialisation des poids), on effectue des apprentissages dans les mêmes conditions plusieurs fois afin d'obtenir des courbes moyennes, et des intervalles de confiances justifiant nos résultats.
 % paragraph notion_de_résultats (end)
 
@@ -197,7 +197,7 @@ Toutes les images ont une dimension de 28*28 pixels en noir et blanc. Ces sets d
 \subsection*{Paramètres généraux utilisés :} % (fold)
 Les fonctions d’activation utilisées pour toutes les expériences ici sont des sigmoïdes de paramètre $\mu$ : 
 $\sigma_\mu(x) = \frac{1}{1+e^{-\mu x}}$\\
-On pourra étudier l’influence de mu sur la vitesse de convergence.
+On pourra étudier l’influence de $\mu$ sur la vitesse de convergence.
 Puisque les fonctions d’activation utilisées sont des sigmoïdes dont la sortie est dans [0, 1], les valeurs d’entrées situées entre 0 et 255 sont normalisées entre 0 et 1.\\
 L’erreur utilisée sur la couche de sortie est l’erreur quadratique.\\
 Les poids sont initialisés avec une répartition gaussienne centrée réduite. Les biais sont initialisés à 0.\\
@@ -222,12 +222,12 @@ Ici, l’influence du choix de la sigmoïde est observée. Les tests ont été e
 On remarque qu’en tout point, choisir 0.1 en paramètre à la place de 0.5 est mieux : vitesse de convergence, précision finale, écart-type. Ce résultat empire avec un êta plus élevé, au point de ne plus réussir à apprendre. On restera donc sur une sigmoïde de paramètre 0.1 pour la suite des expériences.
 
 \subsubsection*{Différents réseaux :} 
-Intuitivement, un réseau avec plus de couches cachées devrait obtenir une meilleure précision, mais devrait avoir un temps d’apprentissage plus long. Ces résultats se confirment avec des expériences sur le réseau à un couche cachée (300 neurones) précédent, et un réseau sans couche cachée. Ce dernier converge très vite aussi bien vis-à-vis du nombre d’apprentissage nécessaire que du temps de calcul. Cependant, il est difficile de dépasser les 90\% de succès. Alors que sur le réseau avec couche cachée, on arrive à obtenir moins de 5\% d’erreur. En revanche, les temps de calculs sont plus élevés. Le réseau avec deux couches cachées, 1000 puis 300, a aussi été testé. Les résultats ici sont satisfaisants, cependant l’amélioration des résultats n’est pas très importante, alors que les temps de calculs augmentent fortement.
+Intuitivement, un réseau avec plus de couches cachées devrait obtenir une meilleure précision, mais devrait avoir un temps d’apprentissage plus long. Ces résultats se confirment avec des expériences sur le réseau à une couche cachée (300 neurones) précédent, et un réseau sans couche cachée. Ce dernier converge très vite aussi bien vis-à-vis du nombre d’apprentissages nécessaire que du temps de calcul. Cependant, il est difficile de dépasser les 90\% de succès. Alors que sur le réseau avec couche cachée, on arrive à obtenir moins de 5\% d’erreur. En revanche, les temps de calculs sont plus élevés. Le réseau avec deux couches cachées, 1000 puis 300, a aussi été testé. Les résultats ici sont satisfaisants, cependant l’amélioration des résultats n’est pas très importante, alors que les temps de calculs augmentent fortement.
 [[insert courbe (cf 17/01/18)]]
-Ce problème est bien connu dans l'étude des réseaux de neurones, et à justifié l'apartion de l'apprentissage profond, que nous évoquerons plus tard.
+Ce problème est bien connu dans l'étude des réseaux de neurones, et a justifié l'apparition de l'apprentissage profond, que nous évoquerons plus tard.
 Temps de calcul approximatifs pour une passe du set d’apprentissage, et un test tous les 1000 apprentissages :
 \begin{itemize}
 	\item 5-6 minutes pour le 784-1000-300-10
 	\item 4 minutes pour le 784-300-10 
 \end{itemize}
-Ces temps peuvent être amélioré avec l’introduction du batch learning qui permet de calculer les résultats des tests plus rapidement.
+Ces temps peuvent être améliorés avec l’introduction du batch learning qui permet de calculer les résultats des tests plus rapidement.
