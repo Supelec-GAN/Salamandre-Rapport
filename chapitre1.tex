@@ -235,8 +235,24 @@ Plus il est petit, plus l'algorithme avancera lentement. Cependant, s'il est tro
   \label{structxor}
 \end{figure}
 
-Cependant, lorsqu'on lui accorde plus de neurones, 4 neurones sur la première couche comme sur la figure \ref{fig:struct241}, ou 3 couches par exemple comme sur la figure \ref{fig:struct2221}, le réseau découpe l'espace comme souhaité. 
+Cependant, lorsqu'on lui accorde plus de neurones, 4 neurones sur la première couche comme sur la figure \ref{fig:struct241}, ou 3 couches par exemple comme sur la figure \ref{fig:struct2221}, le réseau découpe l'espace comme souhaité. En revanche, le XOR avec la structure 2-2-2-1 est assez instable : pour les mêmes paramètres, on peut obtenir un réseau qui converge et un autre qui se plante complètement comme le montre la figure \ref{fig:2_2_2_1_instable}
 	
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{.4\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta05.png}
+    \caption{XOR qui converge}
+    \label{fig:struct221}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.4\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta05v2.png}
+    \caption{XOR planté}
+  \end{subfigure}
+  \caption{XOR en 2-2-2-1 avec eta =0.5}
+  \label{fig:2_2_2_1_instable}
+\end{figure}
+
 \paragraph{Conclusion sur le XOR} % (fold)
 \label{par:conclusion_sur_le_xor}
 Pas d'apprentissage très petit par rapport à la littérature\\
