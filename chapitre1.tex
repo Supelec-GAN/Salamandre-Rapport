@@ -170,14 +170,75 @@ On cherche également à évaluer la vitesse d'apprentissage. Ainsi, on calcule 
 
 \paragraph{Réseau en $2\rightarrow2\rightarrow1$} % (fold)
 
-Les résultats obtenus au début sur ce réseau extrêmement simple semblaient tout à fait aléatoires et nous ont permis de détecter des erreurs de traduction des équations de rétro-propagation en code Python. Nous avons finalement pu obtenir des résultats satisfaisants, comme le montre la figure \ref{fig:2_2_1}. Cependant, ce résultat n'était pas obtenu dans l'intégralité des apprentissages, nous fournissant des résultats très différents, comme sur la figure \ref{fig:2_2_1_echec}. La littérature, et en particulier les rapports des années précédentes \cite{appartement} et \cite{Pinaple}, nous ont montré que le XOR n'était effectivement pas juste dans 100\% des cas.\\
-Nous avons donc soumis le réseau à de nombreux apprentissages, en faisant varier les paramètres ainsi que la forme du réseau. Voici les résultats les plus intéressants :
+Les résultats obtenus au début sur ce réseau extrêmement simple semblaient tout à fait aléatoires et nous ont permis de détecter des erreurs de traduction des équations de rétro-propagation en code Python. Nous avons finalement pu obtenir des résultats satisfaisants, comme le montre la figure \ref{fig:2_2_1}. 
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{fig/xor221_eta009.png}
+  \caption{Application d'un réseau 2-2-1 au plan pour xor}
+  \label{fig:2_2_1}
+\end{figure}
+
 
 % paragraph réseau_en_2_2_1 (end)
 
+\paragraph{Importance du pas d'apprentissage $\eta$}
+
+L'un des paramètres de la descente de gradient est le pas d'apprentissage $\eta$. Il intervient dans le formule de mise à jour des poids :
+\[
+W(t+1) = W(t) + \eta \frac{\partial E}{\partial W} 
+\]
+Plus il est petit, plus l'algorithme avancera lentement. Cependant, s'il est trop grand, l'algorithme ne se rapprochera pas du minimum mais divergera. Il faut donc le choisir suffisamment petit pour que cela converge mais suffisamment grand pour que ce ne soit pas trop lent. La figure \ref{fig:2_2_2_1} montre en 10000 apprentissages le résultat d'un réseau entraîné sur XOR selon le pas d'apprentissage. On remarque notamment que, lors qu'il est trop élevé, le réseau n'arrive pas à découper l'espace.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta01.png}
+    \caption{eta =0.1}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta05.png}
+    \caption{eta =0.5}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta09.png}
+    \caption{eta =0.9}
+  \end{subfigure}
+  \caption{Xor en 2-2-2-1 avec différents pas d'apprentissages au bout de 10000 apprentissages}
+  \label{fig:2_2_2_1}
+\end{figure}
+
+\paragraph{Structure du réseau}
+	La structure du réseau choisie est également importante. Comme expliqué plus haut, si le réseau est 2-2-1, il ne peut pas délimiter l'espace comme on le souhaite. Cela signifie que, pour la fonction XOR avec laquelle on travaille (à savoir qu'on représente VRAI par 1 et FAUX par -1), il ne peut pas découper le plan selon les axes des abscisses et ordonnées. En revanche, il va essayer de le délimiter de façon à accorder aux points (1,1) et (-1, -1) la valeur VRAIE et (1,-1) et (-1,1) la valeur FAUX. Pour cela, il trace une bande comme sur la figure \ref{fig:struct221}. En effet, il y a priorité sur ces valeurs puisque la base d'apprentissage de notre réseau est constituée de couples de -1 et de 1.
+	
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor221_eta009.png}
+    \caption{Structure 2-2-1}
+    \label{fig:struct221}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor241_eta016.png}
+    \caption{Structure 2-4-1}
+    \label{fig:struct241}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/xor2221_eta05.png}
+    \caption{Structure 2-2-2-1}
+    \label{fig:struct2221}
+  \end{subfigure}
+  \caption{Xor avec différentes structures}
+  \label{structxor}
+\end{figure}
+
+Cependant, lorsqu'on lui accorde plus de neurones, 4 neurones sur la première couche comme sur la figure \ref{fig:struct241}, ou 3 couches par exemple comme sur la figure \ref{fig:struct2221}, le réseau découpe l'espace comme souhaité. 
+	
 \paragraph{Conclusion sur le XOR} % (fold)
 \label{par:conclusion_sur_le_xor}
-Instabilité du réseau $2\rightarrow2\rightarrow1$ et comparaison avec le $ 2 \rightarrow 4 \rightarrow 1 $ et le $2 \rightarrow 2 \rightarrow 2 \rightarrow 1 $ \\
 Pas d'apprentissage très petit par rapport à la littérature\\
 Influence des fonctions d'activation
 % paragraph conclusion_sur_le_xor (end)
