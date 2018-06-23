@@ -37,9 +37,10 @@
 % \usepackage[colorlinks]{hyperref}
 \usepackage{media9}
 \usepackage{cleveref}
-\pagestyle{fancy}
+\usepackage[explicit]{titlesec}
 
-\renewcommand{\chaptermark}[1]{\markright{\MakeLowercase{#1}}}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markright{\thechapter~-~#1}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection~#1}}
 
 \newcommand{\headerfmt}[1]{\textsl{\textsf{#1}}}
@@ -47,21 +48,17 @@
 
 %Pour faire des jolis R
 \def\R{\textrm{I\kern-0.21emR}}
-
 \fancyhf{}
-\fancyhead[L,R]{\headerfmtpage{\thepage}}
 \fancyhead[L]{\headerfmt{\rightmark}}
-\fancyhead[R]{\headerfmt{\leftmark}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
 
 
 \fancypagestyle{plain}{ % première page d'un chapitre
+% \titlespacing{\chapter}{0pt}{0pt}{0pt}
   \fancyhf{}
-  \fancyhead[L,R]{\headerfmtpage{\thepage}}
   \fancyhead[L]{\headerfmt{\rightmark}}
-  \fancyhead[R]{\headerfmt{\leftmark}}
   \fancyfoot[C]{\thepage}
   \renewcommand{\headrulewidth}{0.5pt}
   \renewcommand{\footrulewidth}{0pt}
@@ -75,34 +72,34 @@
 
 
 \begin{document}
+\pagestyle{empty}
 
 \include{titre}
 % lege pagina (!!)
 
 % titelblad (!!)
 
-% pas de numérotation jusqu'au sommaire
-\pagestyle{empty}
 
 
 % \include{preface}
 
 \include{abstract}
 
-\pagestyle{fancy}
-\frontmatter
 
 \tableofcontents
+% pas de numérotation jusqu'au sommaire
+\frontmatter
 
-% opmaak voor het eigenlijke boek; onderstaande lijnen
-% weglaten als de eerste regel van een nieuwe alinea moet
-% inspringen in plaats van extra tussenruimte
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.5\baselineskip plus 0.5ex minus 0.2ex}
-\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+% % opmaak voor het eigenlijke boek; onderstaande lijnen
+% % weglaten als de eerste regel van een nieuwe alinea moet
+% % inspringen in plaats van extra tussenruimte
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{0.5\baselineskip plus 0.5ex minus 0.2ex}
+% \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
 
 % Chapitre
 \mainmatter
+\pagestyle{fancy}
 
 % insérez les chapitres ici (\includes)
 \include{chapitre1}
