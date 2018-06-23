@@ -302,18 +302,49 @@ De bons résultats ont été obtenus avec le réseau suivant, conformément à l
 	\item Réseau à une couche cachée de 300 neurones et 10 neurones de sortie (784-300-10)
 	\item Apprentissage stochastique
 \end{itemize}
-Avec ce type de réseau, on obtient rapidement des taux de succès proche de 95\% après 10 passes de l’ensemble du set d’apprentissages, et un écart-type final de ????. Nous allons maintenant voir l’influence des différents paramètres.
+Avec ce type de réseau, on obtient rapidement des taux de succès proche de 95\% après 10 passes de l’ensemble du set d’apprentissages, et un écart-type final de 0.001223411. Nous allons maintenant voir l’influence des différents paramètres.
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{fig/MNIST_result_1.png}
+  \caption{Courbe de réussite du réseau sur MNIST}
+  \label{fig:mnist_result_1}
+\end{figure}
 
 \subsubsection*{Variation d’êta :}
 
 
-Sur le réseau 300-10 précédent, une augmentation du êta de 0.2 à 10 ne semble qu’améliorer la vitesse de convergence : [[insert courbe (cf 17/01/18)]]
+Sur le réseau 300-10 précédent, une augmentation du êta de 0.2 à 10 ne semble qu’améliorer la vitesse de convergence comme le montre la figure \ref{fig:mnist_influence_eta}. 
 L’écart-type n’augmente pas et on obtient une meilleure précision à la fin.
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{fig/MNIST_influence_eta.png}
+  \caption{Courbe de réussite du réseau sur MNIST avec différents $\eta$}
+  \label{fig:mnist_influence_eta}
+\end{figure}
 
 \subsubsection*{Choix du paramètre de la sigmoïde :}
 Ici, l’influence du choix de la sigmoïde est observée. Les tests ont été effectués avec $\mu = 0.1$ et $\mu = 0.5$ comme paramètre de sigmoïdes.
 [[insert courbe (cf 17/01/18)]]
 On remarque qu’en tout point, choisir 0.1 en paramètre à la place de 0.5 est mieux : vitesse de convergence, précision finale, écart-type. Ce résultat empire avec un êta plus élevé, au point de ne plus réussir à apprendre. On restera donc sur une sigmoïde de paramètre 0.1 pour la suite des expériences.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{.5\linewidth}
+    \includegraphics[width=\linewidth]{fig/MNIST_inflsigm_eta02.png}
+    \caption{$\eta=0.2$}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{.5\linewidth}
+    \includegraphics[width=\linewidth]{fig/MNIST_inflsigm_eta07.png}
+    \caption{$\eta=0.7$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.5\linewidth}
+    \includegraphics[width=\linewidth]{fig/MNIST_inflsigm_eta1.png}
+    \caption{$\eta=1$}
+  \end{subfigure}
+  \caption{Comparaison de deux sigmoïdes pour plusieurs $\eta$}
+  \label{fig:MNIST_inflsigm}
+\end{figure}
 
 \subsubsection*{Différents réseaux :} 
 Intuitivement, un réseau avec plus de couches cachées devrait obtenir une meilleure précision, mais devrait avoir un temps d’apprentissage plus long. Ces résultats se confirment avec des expériences sur le réseau à une couche cachée (300 neurones) précédent, et un réseau sans couche cachée. Ce dernier converge très vite aussi bien vis-à-vis du nombre d’apprentissages nécessaire que du temps de calcul. Cependant, il est difficile de dépasser les 90\% de succès. Alors que sur le réseau avec couche cachée, on arrive à obtenir moins de 5\% d’erreur. En revanche, les temps de calculs sont plus élevés. Le réseau avec deux couches cachées, 1000 puis 300, a aussi été testé. Les résultats ici sont satisfaisants, cependant l’amélioration des résultats n’est pas très importante, alors que les temps de calculs augmentent fortement.
