@@ -19,8 +19,8 @@
 
 \chapter{Axes de Recherches : WGAN}
 
-\paragraph*{Introduction : } Avec les différents résultats obtenus par nos premiers GAN, nous avons pu tirer, entre autres, deux conclusions importantes. Le GAN manque cruellement de stabilité, (par exemple un petit changement de paramètre l'empêche de converger correctement), et de métriques pertinentes, c'est à dire que les scores des générateurs et des discriminateurs n'ont pas d'interprétations en termes de progrès de la qualité d'image perçue.\\
-Les chercheurs se sont beaucoup attardés depuis 2016 sur la première question, en comparant par exemple les différents optimiseurs possible \cite{optimiser}, le deuxième point est moins souvent abordés. \\
+\paragraph*{} Avec les différents résultats obtenus par nos premiers GAN, nous avons pu tirer, entre autres, deux conclusions importantes. Le GAN manque cruellement de stabilité (par exemple un petit changement de paramètre l'empêche de converger correctement) et de métriques pertinentes, c'est à dire que les scores des générateurs et des discriminateurs n'ont pas d'interprétations en termes de progrès de la qualité d'image perçue.\\
+Les chercheurs se sont beaucoup attardés depuis 2016 sur la première question, en comparant par exemple les différents optimiseurs possible \cite{optimiser}, le deuxième point est lui moins souvent abordés. \\
 L'article de 2017 Wasserstein GAN \cite{wgan} propose une méthode qui, en s'éloignant légèrement de la philosophie original du papier de Goodfellow \cite{Goodfellow-et-al-2016}, tente d'apporter une réponse à ces deux questions, avec en particulier une métrique pertinente.
 
 \section{Problématique de la descente de gradient simultanée}
@@ -30,9 +30,14 @@ L'article de Goodfellow semble démontrer la convergence du système GAN, cepend
 Ces articles montrent que la descente de gradient simultanée n'est pas simplement une double descente de gradient, mais une descente de gradient dans un champ vectoriel. l'algorithme de GAN effectue l'optimisation suivante : 
 \[x_{t+1} \leftarrow x_t + h v(x_t) \text{ avec } v(x) = \left(\begin{matrix}\frac{\partial}{\partial\theta}f(\theta, \phi)\\\frac{\partial}{\partial\phi}g(\theta, \phi)\end{matrix}\right).\]
 
-$f$ et $g$ étant respectivement les fonctions de coût du Discriminateur et du Générateur. Cependant on constate 2 problèmes, d'une part l'algorithme basé sur la théorie des jeux, qui consiste à faire "jouer" tour à tour le Discriminateur et le Générateur pour optimiser ses paramètres ne consiste qu'en une approximation de la simultanéité de la descente, d'autre part il n'y a aucune preuve que le champ vectoriel $x$ dans lequel l'on se déplace possède des propriétés conservatives. En particulier rien ne garantie que le rotationnel soit nul, ce qui implique que la descente de gradient ne soit pas garantie d'aller vers un minimum, même local !
+$f$ et $g$ étant respectivement les fonctions de coût du Discriminateur et du Générateur. Cependant on constate 2 problèmes, d'une part l'algorithme basé sur la théorie des jeux, qui consiste à faire "jouer" tour à tour le Discriminateur et le Générateur pour optimiser ses paramètres ne consiste qu'en une approximation de la simultanéité de la descente, d'autre part il n'y a aucune preuve que le champ vectoriel $x$ dans lequel l'on se déplace possède des propriétés conservatives. En particulier rien ne garantie que le rotationnel soit nul, ce qui implique que la descente de gradient ne soit pas garantie d'aller vers un minimum, même local (Figure : \ref{fig:vector_field})!
 
-% insérér gif ou screen de la descente qui tourne en rond
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=10cm]{fig/vector_field}
+    \caption{champ vectoriel non conservatif : exemple de descente de gradient}
+    \label{fig:vector_field}
+\end{figure}
 
 On est donc à la recherche d'une autre approche qui contournerait ce problème.
 
@@ -50,7 +55,15 @@ L'objectif est de rapprocher 2 distributions en utilisant la métrique de Wasser
 \[
 W(\mathbb{P}_r, \mathbb{P}_g)= \underset{\gamma \in (\mathbb{P}_r, \mathbb{P}_g)}{\text{inf}} \mathbb{E}_{(x,y)\sim\gamma} \left[ ||x-y||\right]
 \]
-On peut la nommer également distance Earth-Mover, c'est à dire distance du déplacement de terre. En effet cette métrique calcul l'effort à faire pour passer d'une distribution à l'autre. Par exemple si l'on a deux terrain contenant des tas de terre, la hauteur de terre en un point représente la densité de probabilité à cette endroit, le volume complet de terre étant le même (cela représente l'intégrale sur le terrain), alors la distance EM entre les deux terrains est l'effort minimal que l'on peut faire pour déplacer la terre de l'un des terrains pour le faire ressembler à l'autre. Il y a une infinité de façon de déplacer la terre, avec des efforts différents, la distance de Wasserstein, C'est le coût en utilisant le plan de transport optimal. Cela se traduit également en terme de probabilité jointes, pour une approche plus mathématique. 
+On peut la nommer également distance Earth-Mover, c'est à dire distance du déplacement de terre. En effet cette métrique calcul l'effort à faire pour passer d'une distribution à l'autre (Figure : \ref{fig:E-M_distance}). Par exemple si l'on a deux terrain contenant des tas de terre, la hauteur de terre en un point représente la densité de probabilité à cette endroit, le volume complet de terre étant le même (cela représente l'intégrale sur le terrain), alors la distance EM entre les deux terrains est l'effort minimal que l'on peut faire pour déplacer la terre de l'un des terrains pour le faire ressembler à l'autre. Il y a une infinité de façon de déplacer la terre, avec des efforts différents, la distance de Wasserstein, C'est le coût en utilisant le plan de transport optimal. Cela se traduit également en terme de probabilité jointes, pour une approche plus mathématique. 
+
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=10cm]{fig/Earth_mover_distance}
+    \caption{Illustration de la divergence Earth-Mover}
+    \label{fig:E-M_distance}
+\end{figure}
+
 
 L'idée d'utiliser cette divergence de Wasserstein provient des propriétés mathématique qui devrait la rendre plus pertinente pour l'apprentissage des GANs, le détails se trouve dans se papier, mais cela se résume à dire que cette divergence donne plus d'information que la KL-Divergence et ses dérivées (Jensen-Shannon, etc) en étant entre autre bien défini lorsque les supports de distribution sont disjoints et en étant moins souvent constant, avec donc des gradients non nuls et plus adapté à l'apprentissage.
 
@@ -70,13 +83,13 @@ Nous avons donc la possibilité avec un réseau de neurone de calculer la métri
 Fort de cette métrique que l'on peut calculer, nous allons pouvoir mettre en place un algorithme d'apprentissage pour la génération d'image.
 
 Tout d'abord nous avons toujours besoin de deux réseaux, l'un pour la génération, dont le rôle est strictement identique au générateur qui on pu être vu avant, et l'autre pour le calcul de la divergence de Wasserstein. Ce second réseau est appelé critique (plutôt que Discriminateur) par la littérature. Attention, le critique simule une fonction $f$ qui est telle que $\mathbb{E}_{x\sim\mathbb{P}_r}[f(x)] - \mathbb{E}_{x\sim\mathbb{P}_g}[f(x)] $ soit la sortie d'un batch contenant des vrais images et des images de synthèses, c'est à dire que $f(x)$ et $f(G(z))$ n'ont pas de sens contrairement aux $D(x)$ et $D(G(z))$ vu précédemment. 
-Afin que le critique calcule effectivement $W(\mathbb{P}_r, \mathbb{P}_g)$, il est nécessaire de faire converger les paramètres du critique pour obtenir $f_{\text{max}}$. Une fois $W(\mathbb{P}_r, \mathbb{P}_g)$ obtenu, on peut chercher à le minimiser pour faire progresser le générateur, on effectue donc une descente de gradient à partir de ce coût. Cependant on a en fait $f_{\text{max}}(\mathbb{P}_r, \mathbb{P}_g, x)$, c'est à dire que $f_max$ dépend des distributions à un instant donné, par conséquent après une itération on obtient:
+Afin que le critique calcule effectivement $W(\mathbb{P}_r, \mathbb{P}_g)$, il est nécessaire de faire converger les paramètres du critique pour obtenir $f_{\text{max}}$. Une fois $W(\mathbb{P}_r, \mathbb{P}_g)$ obtenu, on peut chercher à le minimiser pour faire progresser le générateur, on effectue donc une descente de gradient à partir de ce coût. Cependant on a en fait $f_{\text{max}}(\mathbb{P}_r, \mathbb{P}_g, x)$, c'est à dire que $f_{\text{max}}$ dépend des distributions à un instant donné, par conséquent après une itération on obtient:
  \[\mathbb{E}_{x\sim\mathbb{P}_r}[f_\text{max}((\mathbb{P}_r, \mathbb{P}_g), x)] - \mathbb{E}_{x\sim\left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)}[f_\text{max}((\mathbb{P}_r, \mathbb{P}_g), x)] \]
 
 Ce qui est différent de :
  \[ \mathbb{E}_{x\sim\mathbb{P}_r}[f_\text{max}((\mathbb{P}_r, \left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)), x)] - \mathbb{E}_{x\sim \mathbb{P}_g}[f_\text{max}((\mathbb{P}_r, \left(\mathbb{P}_g+\Delta\mathbb{P}_g\right)), x)] = W(\mathbb{P}_r, \mathbb{P}_g+\Delta\mathbb{P}_g)\]
 
- Il faut donc à chaque itération refaire converger le critique pour garantir que l'on a bien la fonction $f_max$ correspondant à la distribution $\mathbb{P}_g$ courante (on a en effet $\mathbb{P}_r$ fixe tout du long).
+ Il faut donc à chaque itération refaire converger le critique pour garantir que l'on a bien la fonction $f_{\text{max}}$ correspondant à la distribution $\mathbb{P}_g$ courante (on a en effet $\mathbb{P}_r$ fixe tout du long).
 
  L'algorithme se dessine alors simplement :
  \begin{itemize}
@@ -95,13 +108,87 @@ Ce qui est différent de :
  \item Recommencer les 2 étapes jusqu'à convergence du générateur
  \end{itemize}
 
- On notera dans cette algorithme deux zones floues qui sont les ré-itération "Jusqu'à la convergence". En effet il est particulièrement difficile de s'assurer qu'on a bien converger, ou plutôt de savoir que l'on a converger suffisamment. Comme dans tout les algorithmes de se genre, il y a un trade-off entre le temps de calcul, et une précision parfaite.
+ On notera dans cet algorithme deux zones floues qui sont les ré-itérations "jusqu'à la convergence". En effet il est particulièrement difficile de s'assurer que l'on a bien convergé, ou plutôt de savoir que l'on a convergé suffisamment. Comme dans tous les algorithmes de ce genre, il y a un trade-off entre le temps de calcul et la précision.
 
- Pour la convergence du critique, l'article Wasserstein \cite{arjovsky_wasserstein_2017} suggère de le faire converger de façon certaine au début, i.e, de s'assurer que l'on calcule bien $W ( \mathbb{P}_r, \mathbb{P}_g ) $ avec $\mathbb{P}_g$ étant du bruit avant tout apprentissage. Pour cela on effectue longuement la première étape avant toutes choses. Puis on peut estimer qu'une itération de descente de gradient sur le générateur change peu se dernier, et par une hypothèse de continuité sur la distance de Wasserstein (qui semble justifié si l'on considère cette distance comme la distance Earth-Mover) on peut estimer qu'il faudra peut d'itération de montée de gradient pour faire de nouveau converger "suffisamment" le critique.
+ Pour la convergence du critique, l'article Wasserstein \cite{arjovsky_wasserstein_2017} suggère de le faire converger de façon certaine au début, i.e de s'assurer que l'on calcule bien $W ( \mathbb{P}_r, \mathbb{P}_g ) $ avec $\mathbb{P}_g$ étant la sortie di générateur avant tout apprentissage, c'est à dire à priori un bruit. Pour cela on effectue longuement la première étape avant toutes choses. Puis on peut estimer qu'une itération de descente de gradient sur le générateur change très peu ce dernier, et par une hypothèse de continuité sur la distance de Wasserstein (qui semble justifié si l'on considère cette distance comme la distance Earth-Mover) on peut estimer qu'il faudra peu d'itération de montée de gradient pour faire de nouveau converger "suffisamment" le critique.
 
- Pour la convergence du générateur, on en revient aux problèmes classiques du GAN qui consiste à se demander à quelle moment le générateur est suffisamment performant, on y reviendra dans la partie suivante.
+ Pour la convergence du générateur, on en revient aux problèmes classiques du GAN qui consiste à se demander à quelle moment le générateur est suffisamment performant, nous y reviendront dans les parties suivantes.
 
+ \section{Essais pratiques du WGAN}
+ 	Après l'étude théorique des Wassertstein GAN nous avons mis en pratique dans notre bibliothèque python l'algorithme correspondant.
+
+ \subsection{Modification logicielle}
+ 	Comme cela a été observé, si la réflexion est très différente du GAN classique, l'algorithme des WGANs reste très proche de l'algorithme original. \\
+ 	Nous avons du cependant rajouter plusieurs features à notre librairie pour pouvoir en faire l'implémentation correcte.
+
+ 	\begin{itemize}
+ 		\item Nous avons créé une nouvelle class \emph{WGanGame} héritant de la classe \emph{GanGame} afin de redéfinir quelques fonctions :
+ 			\subitem \emph{play\_and\_learn} -- Il n'y a que 2 types d'apprentissage possible, le critique et le générateur.
+ 			\subitem \emph{critic\_learning} -- Remplace discriminator\_learning afin que l'entrée soit un batch d'image réelles et virtuelles, il faut également effectuer une montée de gradient.
+ 			\subitem \emph{generator\_learning}  -- Il est nescessaire de vérifier que le critique est en mode descente de gradient désormais.
+ 		\item Il a fallu mettre en place le choix de descente ou de montée de gradient au sein des réseaux.
+ 		En effet on ne peut pas simplement choisir un pas négatif pour le critique, car il y a une retro-propagation décroissante dans le discriminateur lors de l'apprentissage du générateur. Cela a impliqué plusieurs gros changements dans les paramètres à passer aux fonctions de rétro-propagation.
+ 		\item Afin de garantir le caractère lipschitzien il a fallu ajouter une possibilité de weight-clipping. Cela a été effectué en utilisant la méthode \emph{clamp} de numpy, et en rajoutant un paramètre au constructeur des couches FCs.
+ 		\item Il a fallu ajouter également 2 fonctions d'erreurs pour le critique et le générateur
+
+ 	\end{itemize}
+ \subsection{Méthodologie et résultats du WGAN}
+ 	Afin de vérifier si la méthode fonctionne, nous avons eu 2 approches : Reproduire les réseaux présents dans la littérature sur le WGAN et tester avec les mêmes paramètres ou appliquer le WGAN à des structures proches des meilleurs résultats obtenus par nous avec des GANs simple. 
+
+ 	Pour essayer de reproduire la littérature, nous nous sommes heurté au problème suivant, elle utilise quasi-systématiquement des réseaux convolués. C'est logique car ce sont ceux qui offrent les meilleurs performances lorsque les réseaux traitent des images. Cependant notre implémentation des réseaux à convolutions n'a jamais été suffisamment satisfaisante pour pouvoir s'en servir sur les GANs.
+
+ 	La deuxième méthode à eu plus de succès. Ils n'est pas possible de reprendre les structures telles quelles, en effet nous utilisions que des Sigmoids pour fonctions d'activations, restreignant les sorties. Or pour le Wassertstein GAN il est important de calculer librement la distance EM. C'est pourquoi le critique utilise des fonctions ReLU d'activation désormais. On a donc un critique de la forme [784-20-1], avec des poids restreints à [-0.1, 0.1]. Pour le générateur, la même structure peut-être utilisé, soit un [100-300-784] pour le moment sans bruit. Il n'est pas nécessaire (ni même conseillé) de restreindre les poids du générateur.
+
+ 	Pour le reste des paramètres, nous avons suivi le papier \cite{arjovsky_wasserstein_2017}, c'est à dire un ratio de 5 pour le critique, des pas de 0.05 (au lieu de 0.0005), en utilisant RMSprop.
+
+ 	\begin{figure}[ht!]
+  \centering
+  	\begin{subfigure}[b]{.3\linewidth}
+    \includegraphics[width=\linewidth]{fig/Wgan_result_1}
+    \caption{Résultat du WGAN pour 27 000 parties, D(x) = 7.58)}
+    \label{fig:Wgan_result_1_nombres}
+\end{subfigure}
+\quad
+\begin{subfigure}[b]{.6\linewidth}
+  \centering
+    \includegraphics[width=10cm]{fig/Wgan_result_1_courbe}
+    \caption{Distance de Wasserstein pendant l'apprentissage}
+    \label{fig:Wgan_result_1_courbe}
+    \end{subfigure}
+    \caption{Apprentissage d'un 7 sans bruit en sortie (100 000 parties)}
+    \label{fig:Wgan_result_1}
+\end{figure}
+	La figure \ref{fig:Wgan_result_1_nombres} montre le résultat de la structure précédente. La première conclusion est que l'algorithme peut fonctionner et donner des résultats, ce qui est très encourageant. On observe que les 7 sont biens formés, que la délimitation avec la partie blanche n'est pas nette, et qu'il ont tous sensiblement la même forme. On est donc dans un mode collapse qui se confirme lorsque l'on regarde l'évolution; Un seul 7 est visible à chaque instant, mais sa forme évolue constamment entre plusieurs 7 différents.\\
+	La figure \ref{fig:Wgan_result_1_courbe} montre l'évolution du score au cours de ce même apprentissage. On y observe bien la pertinence entre la distance de Wasserstein (le score si les convergence sont bien faites) et la qualité visuelle des chiffres. \\
+	La forte augmentation au début correspond à la phase d'initialisation, où l'on ne fait apprendre que le critique afin de calculer la divergence initiale. On observe au cours de l'apprentissage l'amélioration de l'image de façon synchrone avec la chute du score, avec une très rapide progression au début (pour les contours grossier), puis une progression plus limitée (pour les contours fins), et enfin une stagnation visuelle à partir de 25 000 apprentissages.
+
+	L'étape suivante consiste à tenter d'obtenir de la diversité, soit en s’éloignant du mode Collapse, soit en produisant plusieurs chiffres (objectifs en réalité très similaire). 
+
+	Nous avons introduit du bruit en couche de sortie (comme vu au chapitre 2.7) afin d'observer de la diversité. En tentant de produire plusieurs chiffres, nous n'avons eu aucun résultat concluant, seul une tache centrale persiste, que l'on peut peut être interpréter comme une moyenne des chiffres existants. Avec un seul chiffre, on obtient le résultat de la figure \ref{fig:Wgan_result_2_nombres}, on parvient donc à sortir du Collapse, mais on perd en qualité visuelle, le tracé n'étant plus lisse, mais fragmenté.
+
+	Attention, ces derniers résultats sont à prendre avec beaucoup de précaution, ils ont été fait rapidement en fin de projet et n'ont donc pas pu être affinés. Ainsi les conclusions sont que le WGAN fonctionne, que les métriques qu'ils proposent semblent pertinentes vis à vis de ce qui est présenté dans le papier, mais qu'il est soumis à une part importante des problèmes des GANs, une intolérance vis à vis des paramètres approximatifs et le mode Collapse.
+
+\begin{figure}[ht!]
+  \centering
+  	\begin{subfigure}[b]{.4\linewidth}
+    \includegraphics[width=5cm]{fig/Wgan_result_2}
+    \caption{Résultat du WGAN pour 50 000 parties, D(x) = 0.58)}
+    \label{fig:Wgan_result_2_nombres}
+\end{subfigure}
+\quad
+\begin{subfigure}[b]{.4\linewidth}
+  \centering
+    \includegraphics[width=5cm]{fig/Wgan_result_2_courbe}
+    \caption{Distance de Wasserstein pendant l'apprentissage}
+    \label{fig:Wgan_result_2_courbe}
+    \end{subfigure}
+    \caption{Apprentissage d'un 7 avec bruit en sortie (100 000 parties)}
+    \label{fig:Wgan_result_2}
+\end{figure}
  \section{Réflexion sur l'approche}
+
+
+
 
  \subsection{Utilisation de la distance de Wasserstein pour évaluer un générateur}
  \subsection{Problème du caractère Lipschitziens des réseaux de neurones}
