@@ -131,7 +131,7 @@ Au fur et à mesure des améliorations de notre code, nous avons obtenus la stru
 		Nous avons implémenté cette solution lors de notre travail sur MNIST. Goodfellow suggère plusieurs techniques d'implémentations : ajouter un bruit à la sortie d'une couche, multiplier le vecteur de sortie terme à terme avec un vecteur de bruit, ou encore concaténer le vecteur de sortie avec un vecteur de bruit gaussien. Nous avons choisi d'implémenter cette dernière solution. On pourrait toujours craindre que, dans le pire des cas, le Générateur décide d'attribuer au bruit des poids nuls ou négligeables. Mais lors de l'implémentation, on a néanmoins remarqué une baisse significative du taux de Mode Collapse dans nos expériences.
 
 En figure \ref{fig:resultat_gan_bb}, on voit les résultats d'un GAN avec du bruit et un biais non nul en dernière couche. Les chiffres sont peu satisfaisants mais le réseau ne tombe pas en mode Collapse. En revanche, le dernier biais est très influent : il dessine presque à lui tout seul les 7 du réseau.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.7\linewidth}
     \includegraphics[width=\linewidth]{fig/resultatganbetb.png}
@@ -148,22 +148,33 @@ En figure \ref{fig:resultat_gan_bb}, on voit les résultats d'un GAN avec du bru
 
 En retirant le biais, on obtient des résultats comme à la figure \ref{fig:resultat_gan_bruit_sans_biais}. Le réseau arrive à tracer des 8 différents et même des 7 que l'on reconnaît clairement.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
+  \centering
+  
+    \includegraphics[width=0.6\linewidth]{fig/resultatganbruitpasbiais.png}
+    \caption{Résultats d'un GAN en mettant du bruit mais pas de biais en dernière couche}
+  \label{fig:resultat_gan_bruit_sans_biais}
+\end{figure}
+
+
+Enfin, pour un GAN sans biais ni bruit sur la dernière couche, on obtient des résultats semblables à la figure \ref{fig:resultat_gan_ni_bruit_ni_biais}. Sans bruit, ni biais, on retombe dans le monde collapse. Comme première solution, rajouter du bruit sur la dernière couche est efficace !
+
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=\linewidth]{fig/resultatgannibruitnibiais7.png}
+  	\centering
+    \includegraphics[width=0.6\linewidth]{fig/resultatgannibruitnibiais7.png}
     \caption{Le GAN apprend sur des 7}
   \end{subfigure}
   \quad
   \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=\linewidth]{fig/resultatgannibruitnibiais8.png}
+  	\centering
+    \includegraphics[width=0.6\linewidth]{fig/resultatgannibruitnibiais8.png}
     \caption{Le GAN apprend sur des 8}
   \end{subfigure}
   \caption{Résultats d'un GAN sans bruit ni biais sur la dernière couche}
-  \label{fig:resultat_gan_bruit_sans_biais}
+  \label{fig:resultat_gan_ni_bruit_ni_biais}
 \end{figure}
-
-Enfin, pour un GAN sans biais ni bruit sur la dernière couche, on obtient des résultats semblables à la figure \ref{fig:resultat_gan_ni_bruit_ni_biais}. Sans bruit, ni biais, on retombe dans le monde collapse. Comme première solution, rajouter du bruit sur la dernière couche est efficace !
 
 		\subsection{Perturber le GAN avec des "secousses" } 
 		Une approche pour empêcher le GAN de tomber en Mode Collapse fut suggérée par T. Salimans. Elle consiste à ajouter une part d'aléatoire dans le processus. \\
@@ -173,6 +184,7 @@ Enfin, pour un GAN sans biais ni bruit sur la dernière couche, on obtient des r
 	Cependant, les expériences menées par nos soins sur ces techniques ne se sont pas montrées concluantes, le Collapse apparaissait parfois plus vite que sans ces techniques . \\
 	Cela est sans doute dû au fait que nos GANs, contrairement à ceux de Goodfellow et Salimans, n'étaient pas assez robustes pour qu'on puisse se permettre d'ajouter cette part d'aléatoire. 
 	
+
 	
 
 	\subsection{Une autre piste : le minibatch}
