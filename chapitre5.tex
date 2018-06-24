@@ -65,7 +65,7 @@ On peut la nommer également distance Earth-Mover, c'est à dire distance du dé
 \end{figure}
 
 
-L'idée d'utiliser cette divergence de Wasserstein provient des propriétés mathématiques qui devraient la rendre plus pertinente pour l'apprentissage des GANs, le détail se trouve dans ce papier, mais cela se résume à dire que cette divergence donne plus d'informations que la KL-Divergence et ses dérivées (Jensen-Shannon, etc) en étant, entre autres, bien définie lorsque les supports de distribution sont disjoints et en étant moins souvent constante, avec donc des gradients non nuls et plus adaptés à l'apprentissage.
+L'idée d'utiliser cette divergence de Wasserstein provient des propriétés mathématiques qui lui sont propre. Cette divergence est théoriquement plus pertinente pour l'apprentissage des GANs. Le détail se trouve dans ce papier, mais cela se peut se résumer ainsi : Wassertein donne plus d'informations que la KL-Divergence et ses dérivées (Jensen-Shannon, etc) en étant, entre autres, bien définie lorsque les supports de distribution sont disjoints et en étant moins souvent constante, avec donc des gradients non nuls et plus adaptés à l'apprentissage.
 
 On ne peut toujours pas se servir de cette divergence, mais un théorème (la dualité Kantorovich-Rubinstein \cite{optimal-transport}) permet d'obtenir une nouvelle forme de cette divergence :
 \[
