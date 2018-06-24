@@ -23,7 +23,7 @@
 
 \paragraph{}
 	La première partie de cette étude nous a permis de maîtriser l'utilisation de réseaux en perceptron et de structurer une architecture logicielle efficace et souple pour l'étude des GAN. \\
-	Après avoir obtenu des résultats satisfaisants dans la classification de motifs sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2016 \cite{goodfellow_generative_2014}.\\
+	Après avoir obtenu des résultats satisfaisants dans la classification de motifs sur la base MNIST, nous étudions la génération de données à l'aide de réseaux de neurones en nous basant sur le concept de GAN, introduit par I. Goodfellow en 2014 \cite{Goodfellow-et-al-2016}.\\
 	Notre objectif dans cette partie est d’appréhender le concept de GAN et de l'appliquer sur notre programme afin d'étudier les différents paramètres. 
 \section{Principe}
 	\paragraph{}
@@ -93,7 +93,7 @@
 		Imaginons un générateur qui doit générer deux types de données : X et Y. Après quelques apprentissages, il réussit à générer des X suffisament convaincants pour tromper le Discriminateur. A ce moment, le Générateur est "récompensé" pour tromper Le Discriminateur, et ce dernier n'arrive plus à distinguer les X de la BBD de ceux générés artificiellement. Du coup le Discriminateur ne fait plus confiance aux X qu'il reçoit et se concentre sur les Y, sur lesquels il se fait davantage récompenser pour son travail. Après quelques apprentisasges à nouveau, le générateur oublie les X et se met à générer des Y trompeurs.
 		Ainsi, notre GAN fournit alternativement des X et des Y médiocres sur une longue periode, alors qu'au contraire on souhaiterai obtenir des données diverses. Si ce problème est dû au fait que les données à générer sont différentes, on voit que paradoxalement, plus il y a de diversité dans les données à générer ,  moins le Collapse est important.
 		
-\begin{figure}[h]
+\begin{figure}[ht]
   \centerline{\includegraphics[width=0.6\linewidth]{fig/excollapse.png}}
   \caption{Exemple de Collapse}
   \label{fig:ex_collapse}
@@ -104,7 +104,7 @@
 		Nous avons implémenté cette solution lors de notre travail sur MNIST. Goodfellow suggère plusieurs techniques d'implémentations : ajouter un bruit à la sortie d'une couche, multiplier le vecteur de sortie terme à terme avec un vecteur de bruit, ou encore concaténer le vecteur de sortie avec un vecteur de bruit gaussien. Nous avons choisi d'implémenter cette dernière solution. On pourrait toujours craindre que, dans le pire des cas, le Générateur décide d'attribuer au bruit des poids nuls ou négligeables. Mais lors de l'implémentation, on a néanmoins remarqué une baisse significative du taux de Mode Collapse dans nos expériences.
 
 En figure \ref{fig:resultat_gan_bb}, on voit les résultats d'un GAN avec du bruit et un biais non nul en dernière couche. Les chiffres sont peu satisfaisants mais le réseau ne tombe pas en mode Collapse. En revanche, le dernier biais est très influent : il dessine presque à lui tout seul les 7 du réseau.
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.7\linewidth}
     \includegraphics[width=\linewidth]{fig/resultatganbetb.png}
@@ -121,7 +121,15 @@ En figure \ref{fig:resultat_gan_bb}, on voit les résultats d'un GAN avec du bru
 
 En retirant le biais, on obtient des résultats comme à la figure \ref{fig:resultat_gan_bruit_sans_biais}. Le réseau arrive à tracer des 8 différents et même des 7 que l'on reconnaît clairement.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=\linewidth]{fig/resultatganbruitpasbiais}
+    \caption{Résultats d'un GAN en mettant avec bruit et sans biais en dernière couche}
+  \label{fig:resultat_gan_bruit_sans_biais}
+\end{figure}
+
+
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{\linewidth}
     \includegraphics[width=\linewidth]{fig/resultatgannibruitnibiais7.png}
@@ -133,16 +141,11 @@ En retirant le biais, on obtient des résultats comme à la figure \ref{fig:resu
     \caption{Le GAN apprend sur des 8}
   \end{subfigure}
   \caption{Résultats d'un GAN sans bruit ni biais sur la dernière couche}
-  \label{fig:resultat_gan_bruit_sans_biais}
+  \label{fig:resultat_gan_ni_bruit_ni_biais}
 \end{figure}
 
 Enfin, pour un GAN sans biais ni bruit sur la dernière couche, on obtient des résultats semblables à la figure \ref{fig:resultat_gan_ni_bruit_ni_biais}. Sans bruit, ni biais, on retombe dans le monde collapse. Comme première solution, rajouter du bruit sur la dernière couche est efficace !
 
-\begin{figure}[h]
-  \centerline{\includegraphics[width=0.6\linewidth]{fig/resultatgannibruitnibiais.png}}
-  \caption{Réseau ayant appris sur des 7 et des 8, sans bruit ni biais sur la dernière couche}
-  \label{fig:resultat_gan_ni_bruit_ni_biais}
-\end{figure}
 
 		\subsection{Perturber le GAN avec des "secousses" } 
 		Une approche pour empêcher le GAN de tomber en Mode Collapse fut suggérée par T. Salimans. Elle consiste à ajouter une part d'aléatoire dans le processus. \\

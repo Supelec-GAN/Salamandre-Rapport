@@ -57,7 +57,7 @@ On a déjà vu que le neurone se prêtait bien à une séparation binaire des do
 L’organisation du réseau se fera au moyen de couches de neurones. Une couche est un ensemble de neurones possédant les mêmes entrées. Cette couche aura alors plus d'une sortie (une par neurone dans la couche), ce qui permet de généraliser aux sorties vectorielles le concept du neurone seul. En ayant ainsi une sortie vectorielle, on peut utiliser les sorties d'une couche en tant qu'entrée d'une autre couche, ce qui complexifie encore les fonctions possiblement décrites par les neurones.
 On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisée dans la couche suivante mais plusieurs couches plus loin ou dans des couches antérieures. On peut en réalité construire le graphe de neurones que l'on veut, mais, dans la pratique, seules certaines structures sont utilisés. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centerline{\includegraphics[width=0.5\linewidth]{fig/schemacouche.jpg}}
   \caption{Exemple d'une couche de neurones}
   \label{fig:couche}
@@ -66,7 +66,7 @@ On peut imaginer des réseaux plus complexes où la sortie n'est pas réutilisé
 Le perceptron est un modèle de réseau de neurones auquel on va s’intéresser particulièrement. Il s'agit d'un réseau linéaire où chaque couche est entièrement connectée à la suivante, c'est-à-dire que chaque neurone d'une couche prend en entrée toutes les sorties de la couche précédente. On ne trouve aucune boucle dans le graphe d'un perceptron, c'est donc une propagation vers l'avant.
 L’utilité d’avoir plusieurs couches se comprend facilement. Si on reprend notre exemple du problème de classification des points, on peut imaginer, par exemple, quatre neurones qui enverront leur sortie sur un neurone à quatre entrées. Chacun des neurones réalisera la séparation du plan en deux selon le principe déjà évoqué précédemment. Le neurone de la couche de sortie pourra réaliser facilement le rôle d’un ET logique. On vient de sélectionner un carré dans le plan. En étendant le raisonnement, on voit qu’un réseau à deux couches permet de sélectionner n’importe quelle zone convexe de l’espace des entrées (ici du plan). De même, un réseau à trois couches pourra sélectionner n’importe quelle zone concave de l’espace des entrées.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centerline{\includegraphics[width=0.5\linewidth]{fig/espace1neurone.jpg}}
   \caption{Frontière de décision pour un perceptron simple à 1 neurone et 2 entrées}
   \label{fig:espace1neurone}
@@ -189,7 +189,7 @@ On cherche également à évaluer la vitesse d'apprentissage. Ainsi, on calcule 
 
 Les résultats obtenus au début sur ce réseau extrêmement simple semblaient tout à fait aléatoires et nous ont permis de détecter des erreurs de traduction des équations de rétro-propagation en code Python. Nous avons finalement pu obtenir des résultats satisfaisants, comme le montre la figure \ref{fig:2_2_1}. 
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \includegraphics[width=\linewidth]{fig/xor221_eta009.png}
   \caption{Application d'un réseau 2-2-1 au plan pour xor}
   \label{fig:2_2_1}
@@ -206,7 +206,7 @@ W(t+1) = W(t) + \eta \frac{\partial E}{\partial W}
 \]
 Plus il est petit, plus l'algorithme avancera lentement. Cependant, s'il est trop grand, l'algorithme ne se rapprochera pas du minimum mais divergera. Il faut donc le choisir suffisamment petit pour que cela converge mais suffisamment grand pour que ce ne soit pas trop lent. La figure \ref{fig:2_2_2_1} montre en 10000 apprentissages le résultat d'un réseau entraîné sur XOR selon le pas d'apprentissage. On remarque notamment que, lors qu'il est trop élevé, le réseau n'arrive pas à découper l'espace.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.3\linewidth}
     \includegraphics[width=\linewidth]{fig/xor2221_eta01.png}
@@ -229,7 +229,7 @@ Plus il est petit, plus l'algorithme avancera lentement. Cependant, s'il est tro
 \paragraph{Structure du réseau}
 	La structure du réseau choisie est également importante. Comme expliqué plus haut, si le réseau est 2-2-1, il ne peut pas délimiter l'espace comme on le souhaite. Cela signifie que, pour la fonction XOR avec laquelle on travaille (à savoir qu'on représente VRAI par 1 et FAUX par -1), il ne peut pas découper le plan selon les axes des abscisses et ordonnées. En revanche, il va essayer de le délimiter de façon à accorder aux points (1,1) et (-1, -1) la valeur VRAIE et (1,-1) et (-1,1) la valeur FAUX. Pour cela, il trace une bande comme sur la figure \ref{fig:struct221}. En effet, il y a priorité sur ces valeurs puisque la base d'apprentissage de notre réseau est constituée de couples de -1 et de 1.
 	
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.3\linewidth}
     \includegraphics[width=\linewidth]{fig/xor221_eta009.png}
@@ -254,12 +254,12 @@ Plus il est petit, plus l'algorithme avancera lentement. Cependant, s'il est tro
 
 Cependant, lorsqu'on lui accorde plus de neurones, 4 neurones sur la première couche comme sur la figure \ref{fig:struct241}, ou 3 couches par exemple comme sur la figure \ref{fig:struct2221}, le réseau découpe l'espace comme souhaité. En revanche, le XOR avec la structure 2-2-2-1 est assez instable : pour les mêmes paramètres, on peut obtenir un réseau qui converge et un autre qui se plante complètement comme le montre la figure \ref{fig:2_2_2_1_instable}
 	
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.4\linewidth}
     \includegraphics[width=\linewidth]{fig/xor2221_eta05.png}
     \caption{XOR qui converge}
-    \label{fig:struct221}
+    \label{fig:_05}
   \end{subfigure}
   \quad
   \begin{subfigure}[b]{.4\linewidth}
@@ -304,7 +304,7 @@ De bons résultats ont été obtenus avec le réseau suivant, conformément à l
 \end{itemize}
 Avec ce type de réseau, on obtient rapidement des taux de succès proche de 95\% après 10 passes de l’ensemble du set d’apprentissages, et un écart-type final de 0.001223411. Nous allons maintenant voir l’influence des différents paramètres.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \includegraphics[width=\linewidth]{fig/MNIST_result_1.png}
   \caption{Courbe de réussite du réseau sur MNIST}
   \label{fig:mnist_result_1}
@@ -316,7 +316,7 @@ Avec ce type de réseau, on obtient rapidement des taux de succès proche de 95\
 Sur le réseau 300-10 précédent, une augmentation du êta de 0.2 à 10 ne semble qu’améliorer la vitesse de convergence comme le montre la figure \ref{fig:mnist_influence_eta}. 
 L’écart-type n’augmente pas et on obtient une meilleure précision à la fin.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \includegraphics[width=\linewidth]{fig/MNIST_influence_eta.png}
   \caption{Courbe de réussite du réseau sur MNIST avec différents $\eta$}
   \label{fig:mnist_influence_eta}
@@ -327,7 +327,7 @@ Ici, l’influence du choix de la sigmoïde est observée. Les tests ont été e
 [[insert courbe (cf 17/01/18)]]
 On remarque qu’en tout point, choisir 0.1 en paramètre à la place de 0.5 est mieux : vitesse de convergence, précision finale, écart-type. Ce résultat empire avec un êta plus élevé, au point de ne plus réussir à apprendre. On restera donc sur une sigmoïde de paramètre 0.1 pour la suite des expériences.
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
   \begin{subfigure}[b]{.5\linewidth}
     \includegraphics[width=\linewidth]{fig/MNIST_inflsigm_eta02.png}
