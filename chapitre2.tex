@@ -85,7 +85,7 @@
 	\subsection{Présentation du problème}
 		Le problème du Mode Collapse est bien connu dans la confections de GANs. Il se traduit par un générateur qui ne produit plus qu'un type de données particulier, sans diversité. 
 		Imaginons un générateur qui doit générer deux types de données : X et Y. Après quelques apprentissages, il réussit à générer des X suffisament convaincants pour tromper le Discriminateur. A ce moment, le Générateur est "récompensé" pour tromper Le Discriminateur, et ce dernier n'arrive plus à distinguer les X de la BBD de ceux générés artificiellement. Du coup le Discriminateur ne fait plus confiance aux X qu'il reçoit et se concentre sur les Y, sur lesquels il se fait davantage récompenser pour son travail. Après quelques apprentisasges à nouveau, le générateur oublie les X et se met à générer des Y trompeurs.
-		Ainsi, notre GAN fournit alternativement des X et des Y médiocres sur une longue periode, alors qu'au contraire on souhaiterai obtenir des données diverses.
+		Ainsi, notre GAN fournit alternativement des X et des Y médiocres sur une longue periode, alors qu'au contraire on souhaiterai obtenir des données diverses. Si ce problème est dû au fait que les données à générer sont différentes, on voit que paradoxalement, plus il y a de diversité dans les données à générer ,  moins le Collapse est important.
 	\subsection{Une première idée de résolution du problème}
 		Une première étape pour éviter le problème est décrite dans l'article de NIPS 2014 de I.Goodfellow \cite{nips-2014}. Il s'agit d'ajouter du bruit sur une couche intérmédiaire du Générateur. En forçant ainsi une part d'aléatoire dans le Générateur, on peut éspérer qu'il ne se "vérrouille" pas à produire une donnée particulière. 
 		Nous avons implémenté cette solution lors de notre travail sur MNIST. Goodfellow suggère plusieurs techniques d'implémentations : ajouter un bruit à la sortie d'une couche, mutiplier le vercteur de sortie terme à terme avec un vecteur de bruit, ou encore concaténer le vecteur de sortie avec un vecteur de bruit gaussien. Nous avons chosi d'implémenter cette dernière solution. On pourrait toujours craindre que dans le pire des cas, le Générateur décide d'atribuer au bruit des poids nuls ou négligeables. Mais lors de l'implémentation, on a néanmoins remarqué une baisse significative du taux de Mode Collapse dans nos expériences.
@@ -109,7 +109,9 @@
 
 
 \section{Résultat sans collapse}
-{même chose que la section premiers résultats, mais avec le bruit en entrée}
+Ici, des résultats obtenus sans Collapse, la solution choisie fut celle qui consistait à mettre du bruit dans les couches intermédiaires. De plus, comme pour prouver que plus de diversité signifiait moins de Collapse, on s'est aperçu que le réseau avait plus de mal à produire des chiffres différents lorsqu'on lui demandait d'en produire 3 que 10.
+
+
 \section{Autres problèmes rencontrés } 
 Comme mentionné plus haut, il nous a été très difficile de savoir dans quel direction progresser.//
 En effet, il n'existe pour l'instant aucune méthode fiable pour attribuer un "score de vraisemblance "  aux donnés générées par GAN. En l'état, la meilleure méthode suggérée par l'état de l'art consiste à demander à des humains si les chiffres qu'on leur présentait leur paraissaient vraisemblables ou non. L'expérience fur tentée par Goodfellow avec l'aide du captcha d'Amazon, mais même de tels moyens n'ont pas donnés de résultats très satisfaisants (il se trouve que le sujet humain, à l'instar d'un Discriminateur, apprenait de ses erreurs et devenait trop bon trop vite ) . //
