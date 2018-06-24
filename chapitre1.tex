@@ -151,16 +151,40 @@ Vous pouvez retrouver les codes sur https://github.com/Supelec-GAN/Salamandre-XO
 
 Afin de pouvoir implémenter facilement les calculs matriciels obtenus plus tôt, nous définissons notre plus bas niveau d'intelligence par une classe NeuronLayer représentant une couche de neurone. \\
 
-Une couche de neurones est définie par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation_function$, nécessairement commune à tous les neurones dans cette structure.
+Une couche de neurones est définie par sa matrice de poids $weights$, son vecteur de biais $biais$ ainsi que sa fonction d'activation $activation\_function$, nécessairement commune à tous les neurones dans cette structure.
 
 \paragraph{Présentation des méthodes} % (fold)
  \label{par:presentatation_des_methodes}
  
  \begin{itemize}
- 	\item $compute$ : Propagation d'une entrée au sein de cette couche
- 	\item 
+ 	\item $compute$ : Propagation d'une entrée au sein de cette couche.
+ 	\item $backprop$ : Rétro-Propagation de l'influence de l'erreur de la sortie de la couche avec mise à jour des poids et calculs de l'influence de l'erreur sur la sortie.
+  \item $derivate\_error$ : Calcul intermédiaire dans la rétro-propagation.
+  \item  $init\_derivate\_error$ : Calcul de la dérivée de l'erreur pour la couche de sortie
+ \end{itemize}
+
+Pour faire nos réseaux de Neurones, nous utilisons une classe Network qui permet de relier les différents NetworkLayer. Ainsi elle possède \emph{self\_layer\_list} qui est une liste de NetworkLayer. Les méthodes principales sont :  
+ \begin{itemize}
+  \item $compute$ : Propagation depuis l'entrée au sein de toutes les couches.
+  \item $backprop$ : Rétro-Propagation de l'influence de l'erreur de la sortie du réseau et itération de \emph{backprop} sur chaque NetworkLayer.
+  \item $reset$ : Remet tout les NetworkLayer à l'état initial.
  \end{itemize}
  % paragraph presentatation_des_methodes (end) 
+
+Afin de simplifier l'utilisation des fonctions au sein de nos réseaux, nous créons une classe Function. Elle comprend les fonctions d'activations, les fonctions d'erreur, mais également des fonctions d'apprentissage i.e. les sorties attendues pour une entrée lors de l'apprentissage (ex : XorTest renvoie le résultat du XOR, MnistTest renvoie le label pour une image labellisée donnée).
+
+Finalement pour utiliser et interpréter des réseaux, nous avons une classe Interface, celle si comporte plusieurs méthodes importantes. $learning\_manager$ permet d'organiser l'apprentissage et la récupération de données. Elle contient également des méthodes pour afficher des résultats.
+
+
+\begin{figure}[ht!]
+  \includegraphics[width=\linewidth]{fig/uml_xor}
+  \caption{Diagramme UML du code minimal et initial}
+  \label{fig:uml_xor}
+\end{figure}
+
+Après évolution du code, on trouvera dans DataProcessor des méthodes pour effectuer des calculs sur les données, tels que la moyenne sur plusieurs séries d'expérience et l'écart-type. La classe DataInterface sert à la sauvegarde des résultats et des paramètres ainsi qu'à leur chargement pour utilisation ultérieure. 
+
+Finalement les scripts run.py et tests.py servent à lancer des expériences en utilisant la librairie mise en place.
 
 % subsection structure_du_code (end)
 
