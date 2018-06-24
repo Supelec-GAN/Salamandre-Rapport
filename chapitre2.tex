@@ -68,8 +68,22 @@
 
 
 \section{Structure et utilisation du code}
-	{description des modifications importantes pour le GAN (or optimisation du code source)}
+	
+	Dans cette section nous allons aborder la structure de notre code pour l'implémentation des GANs ainsi que les différentes améliorations successives. 
 
+\begin{figure}[ht!]
+  \includegraphics[width=\linewidth]{fig/uml_gan}
+  \caption{Diagramme UML du code minimal et initial}
+  \label{fig:uml_gan}
+\end{figure}
+
+L'UML \ref{fig:uml_gan} précedent décrit le code présent dans le repo Salamandre-Code cité précéemment. On y retrouve les éléments de l'UML utilisé pour le XOR, à ceci près que nous avons fait évoluer l'Interface pour devenir la classe Engine, afin de bien séparer les actions d'apprentissages et de traitements de données. 
+
+Pour l'implémentation des GANs, il nous suffit de créer l'interaction entre 2 réseaux. Nous avons donc mis en place une classse GanGame qui instancie une partie entre 2 réseaux, l'un jouant le rôle du discriminateur, l'autre du générateur. 
+
+Les méthodes principales sont les suivantes : 
+
+...
 
 \section{Premiers résultats pour des GANs simples}
 	Afin d'appréhender correctement le fonctionnement des GANs, il est nécessaire de tester de nombreux paramètres. Les résultats, fructueux ou non, permettent d'évaluer l'intérêt des paramètres et de comprendre le sens "physique" de leur influence.\\
