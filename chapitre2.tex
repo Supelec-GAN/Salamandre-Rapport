@@ -70,10 +70,13 @@
 	Ces essais se feront sur la base MNIST, c'est-à-dire que notre objectif sera d'obtenir par le générateur des chiffres manuscrits qu'il aura dessiné par lui-même. Plus précisément on attend du générateur après apprentissage que chaque entrée génère un chiffre entre 0 et 9 qu'un être humain ne peut distinguer d'un chiffre manuscrit écrit par un humain (donc de la base MNIST). De plus, chaque entrée 
 
 	\subsection{Méthodologie initiale}
-		L'un des objectifs de ce projet est de décortiquer au mieux la méthode GAN. Pour cela nous utilisons les réseaux de neurones les plus simples, ils seront complexifiés par la suite. La plupart des articles sur le sujet présentent des réseaux utilisant des structures avancés (couche convolutive, optimiseur de descente, etc.) il n'est donc pas possible de se référer aux paramètres de ses articles pour obtenir immédiatement des résultats et s'assurer que notre programme tournent correctement. \\
+		L'un des objectifs de ce projet est de décortiquer au mieux la méthode GAN. Pour cela nous utilisons les réseaux de neurones les plus simples, ils seront complexifiés par la suite. La plupart des articles sur le sujet présentent des réseaux utilisant des structures avancés (couche convolutive, optimiseur de descente, etc.) il n'est donc pas possible de se référer aux paramètres de ses articles pour obtenir immédiatement des résultats et s'assurer que notre programme tourne correctement. \\
 		Pour le choix du réseau Discriminateur, le choix se porte sur des structures ayant eu de bonnes performance pour le MNIST, c'est-à-dire soit un très bon taux final, soit une vitesse de convergence élevée. En effet le Discriminateur n'est qu'un simple classificateur sur la base MNIST. Le choix du générateur est plus complexe car il faut que la structure soit assez puissante pour dessiner des chiffres. Cela semble bien plus difficile que simplement les reconnaitre, car ils peuvent être reconnus à l'aide de features très particulières, tandis que la génération exige une information complète. La première idée pour dimensionner le réseau est d'avoir une entrée suffisante pour générer la diversité de sortie souhaité, mais pas nécessairement plus pour ne pas avoir un réseau trop lourd en calcul.\\
 		Pour les autres paramètres, aucune idée précise de leurs ordre de grandeur nécessaire, en particulier le pas d'apprentissage (très différents pour MNIST et XOR par exemple).\\
-		Nous avons donc balayé les paramètres possibles afin d'obtenir le maximum d'information avec des GANs simples.
+		Nous avons donc balayé les paramètres possibles afin d'obtenir le maximum d'information avec des GANs simples.//
+		Le principal soucis que nous avons eu avec cette approche fut l'évaluation des performances de nos GANs, au début de l'étude, alors que nous n'arrivions pas encore à former des chiffres satisfaisants, nous n'avions aucun moyen pour savoir si un paramètre était meilleur qu'un autre. //
+		Nous avons considéré l'étude de l'évolution des scores que le Discriminateur attribuait aux images de Mnist et à celles du Générateur, mais elles se sont révélées inexploitables : le score brut ne permettait pas de rendre compte de l'apprentissage effectué jusqu'alors. Et le score ne révélait en rien la qualité de l'image. 
+{ici des exemples de courbes sur lesquelles on travaillait au début } 
 
 
 
@@ -85,12 +88,25 @@
 		Ainsi, notre GAN fournit alternativement des X et des Y médiocres sur une longue periode, alors qu'au contraire on souhaiterai obtenir des données diverses.
 	\subsection{Une première idée de résolution du problème}
 		Une première étape pour éviter le problème est décrite dans l'article de NIPS 2014 de I.Goodfellow \cite{nips-2014}. Il s'agit d'ajouter du bruit sur une couche intérmédiaire du Générateur. En forçant ainsi une part d'aléatoire dans le Générateur, on peut éspérer qu'il ne se "vérrouille" pas à produire une donnée particulière. 
-		Nous avon implémenté cette solution lors de notre travail sur MNIST. Goodfellow suggère plusieurs techniques d'implémentations : ajouter un bruit à la sortie d'une couche, mutiplier le vercteur de sortie terme à terme avec un vecteur de bruit, ou encore concaténer le vecteur de bruit avec un vecteur gaussien. Nous avons chosis d'implémenter cette dernière solution. On pourrait toujours craindre que dans le pire des cas, le Générateur décide d'atribuer au bruit des poids nuls ou négligeables. Mais lors de l'implémentation, on a néanmoins remarqué une baisse significative du taux de Mode Collapse dans nos expériences.
-	\subsection{Une autre piste : le minibatch}
-		Une autre methode déstinée à empécher le Mode Collapse et à forcer la diversité des données générées fut proposée par T.Salilmans et I.Goodfellow dans Improved techniques for training GANs \cite{salimans_improved_2016}. L'idée consiste en proposant au Discriminateur non plus une seule donnée du Générateur mais bien tout un petit paquet (minibatch). La distance entre chacune des données de ce minibatch est calculée et traitée (passée à l'exponentielle négative) puis ajoutée à la sortie d'une couche intermédiaire du Discriminateur. Ainsi, on envoie $n$ images dans notre Discriminateur, qui possedera sur une couche intermédiaire $n$ neurones suplémentaires, l'activation du neurone $i$ correspond à un score de ressemblance entre la donnée traitée actuellement et la donnée $i$. Le Discriminateur a donc un moyen de determiner si les données générées par le Générateur sont toutes semblabes entre elles ou non.
+		Nous avons implémenté cette solution lors de notre travail sur MNIST. Goodfellow suggère plusieurs techniques d'implémentations : ajouter un bruit à la sortie d'une couche, mutiplier le vercteur de sortie terme à terme avec un vecteur de bruit, ou encore concaténer le vecteur de sortie avec un vecteur de bruit gaussien. Nous avons chosi d'implémenter cette dernière solution. On pourrait toujours craindre que dans le pire des cas, le Générateur décide d'atribuer au bruit des poids nuls ou négligeables. Mais lors de l'implémentation, on a néanmoins remarqué une baisse significative du taux de Mode Collapse dans nos expériences.
+		\subsection {Perturber le GAN avec des "secousses" } 
+		Une approche pour empêcher le GAN de tomber en Mode Collapse fut suggérée par T. Salimans. Elle consiste en ajouter une part d'aléatoire dans le processus. //
+	Plutôt que de s'attendre à ce que le Discriminateur renvoie 1 sur une image de la base de données, on calcule l'erreur à partir d'un réel proche de 1 (entre 0.7 et 0.99) afin de plus facilement le récompenser. //
+	En parallèle, de temps en temps (un cas sur deux cent, grand maximum ) on trompe le Discriminateur en lui disant qu'on attendait une vraie image lorsqu'il en traite une fausse et inversement. //
+	Ces deux techniques permettraient, en théorie de renforcer le générateur de manière subtile (pour la première ) et de le perturber suffisamment pour sortir des situations de Collapse (deuxième technique ) //
+	Cependant, les expériences menées par nos soins sur ces techniques ne se sont pas montrées concluantes, le Collapse apparaissait parfois plus vite que sans ses techniques . //
+	Cela est sans doute dû au fait que nos GANs, contrairement à ceux de Goodfellow et Salimans, n'étaient pas assez robustes pour qu'on puisse se permettre d'ajouter cette part d'aléatoire. 
+	
 	
 
-{Le mode collapse aura été présenté à la section d'avant, tentative d'explication de pourquoi on en sort avec le bruit}
+	\subsection{Une autre piste : le minibatch}
+		Une autre methode déstinée à empécher le Mode Collapse et à forcer la diversité des données générées fut proposée par T.Salilmans et I.Goodfellow dans Improved techniques for training GANs \cite{salimans_improved_2016}.\\
+		L'idée consiste en proposant au Discriminateur non plus une seule donnée du Générateur mais bien tout un petit paquet (minibatch). La distance entre chacune des données de ce minibatch est calculée et traitée (passée à l'exponentielle négative) puis ajoutée à la sortie d'une couche intermédiaire du Discriminateur. //
+		Ainsi, 5on envoie $n$ images dans notre Discriminateur, qui possedera sur une couche intermédiaire $n$ neurones suplémentaires, l'activation du neurone $i$ correspond à un score de ressemblance entre la donnée traitée actuellement et la donnée $i$. Le Discriminateur a donc un moyen de determiner si les données générées par le Générateur sont toutes semblabes entre elles ou non.//
+		
+	
+
+
 
 \section{Résultat sans collapse}
 {même chose que la section premiers résultats, mais avec le bruit en entrée}
