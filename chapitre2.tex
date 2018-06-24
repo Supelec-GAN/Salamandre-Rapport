@@ -67,7 +67,7 @@
 
 \section{Premier résultats pour des GANs simples}
 	Afin d'appréhender correctement le fonctionnement des GANs, il est nécessaire de tester de nombreux paramètres. Les résultats, fructueux ou non, permettent d'évaluer l'intérêt des paramètres et de comprendre le sens "physique" de leur influence.\\
-	Ces essais se feront sur la base MNIST, c'est-à-dire que notre objectif sera d'obtenir par le générateur des chiffres manuscrits qu'il aura dessiné par lui-même. Plus précisément on attend du générateur après apprentissage que chaque entrée génère un chiffre entre 0 et 9 qu'un être humain ne peut distinguer d'un chiffre manuscrit écrit par un humain (donc de la base MNIST). De plus, chaque entrée 
+	Ces essais se feront sur la base MNIST, c'est-à-dire que notre objectif sera d'obtenir par le générateur des chiffres manuscrits qu'il aura dessiné par lui-même. Plus précisément on attend du générateur après apprentissage que chaque entrée génère un chiffre entre 0 et 9 qu'un être humain ne peut distinguer d'un chiffre manuscrit écrit par un humain (donc de la base MNIST).
 
 	\subsection{Méthodologie initiale}
 		L'un des objectifs de ce projet est de décortiquer au mieux la méthode GAN. Pour cela nous utilisons les réseaux de neurones les plus simples, ils seront complexifiés par la suite. La plupart des articles sur le sujet présentent des réseaux utilisant des structures avancés (couche convolutive, optimiseur de descente, etc.) il n'est donc pas possible de se référer aux paramètres de ses articles pour obtenir immédiatement des résultats et s'assurer que notre programme tourne correctement. \\
@@ -101,8 +101,8 @@
 
 	\subsection{Une autre piste : le minibatch}
 		Une autre methode déstinée à empécher le Mode Collapse et à forcer la diversité des données générées fut proposée par T.Salilmans et I.Goodfellow dans Improved techniques for training GANs \cite{salimans_improved_2016}.\\
-		L'idée consiste en proposant au Discriminateur non plus une seule donnée du Générateur mais bien tout un petit paquet (minibatch). La distance entre chacune des données de ce minibatch est calculée et traitée (passée à l'exponentielle négative) puis ajoutée à la sortie d'une couche intermédiaire du Discriminateur. //
-		Ainsi, 5on envoie $n$ images dans notre Discriminateur, qui possedera sur une couche intermédiaire $n$ neurones suplémentaires, l'activation du neurone $i$ correspond à un score de ressemblance entre la donnée traitée actuellement et la donnée $i$. Le Discriminateur a donc un moyen de determiner si les données générées par le Générateur sont toutes semblabes entre elles ou non.//
+		L'idée consiste en proposant au Discriminateur non plus une seule donnée du Générateur mais bien tout un petit paquet (minibatch). Une distance mathématique entre chacune des données de ce minibatch est calculée et traitée (passée à l'exponentielle négative) puis ajoutée à la sortie d'une couche intermédiaire du Discriminateur. //
+		Ainsi, on envoie $n$ images dans notre Discriminateur, qui possedera sur une couche intermédiaire $n$ neurones suplémentaires, l'activation du neurone $i$ correspond à un score de ressemblance entre la donnée traitée actuellement et la donnée $i$. Le Discriminateur a donc un moyen de determiner si les données générées par le Générateur sont toutes semblabes entre elles ou non. Il pourra ainsi facilement punir le Discriminateur si celui tombait en Mode Collapse . //
 		
 	
 
@@ -110,5 +110,13 @@
 
 \section{Résultat sans collapse}
 {même chose que la section premiers résultats, mais avec le bruit en entrée}
+\section{Autres problèmes rencontrés } 
+Comme mentionné plus haut, il nous a été très difficile de savoir dans quel direction progresser.//
+En effet, il n'existe pour l'instant aucune méthode fiable pour attribuer un "score de vraisemblance "  aux donnés générées par GAN. En l'état, la meilleure méthode suggérée par l'état de l'art consiste à demander à des humains si les chiffres qu'on leur présentait leur paraissaient vraisemblables ou non. L'expérience fur tentée par Goodfellow avec l'aide du captcha d'Amazon, mais même de tels moyens n'ont pas donnés de résultats très satisfaisants (il se trouve que le sujet humain, à l'instar d'un Discriminateur, apprenait de ses erreurs et devenait trop bon trop vite ) . //
+On a donc recherché un moyen d'évaluer nos résultats. Après qu'on nous ait suggéré des pistes sur le traitement d'images, nous nous sommes tournés vers le WGAN, dont on parlera plus tard , qui ne souffrait pas de telles difficultés . 
+
+De plus, après un bref entretien avec Ian LeCun, (où nous avons constaté que nous butions sur des problèmes biens établis de la théorie du GAN), une autre piste d'amélioration a été proposée . //
+D'après LeCun, la base de donnés Mnist était "trop binaire" (comprenez qu l'on passe du blanc au noir trop rapidement dans l'image) . Ainsi, le réseau n'était pas très enclin à fournir de la diversité (l'information se trouve dans ce pixel est pas dans celui juste à côté ) . //
+Il nous  a conseillé de travailler sur des bases de données plus diverses (CIFAR 10 par exemple ), cependant, le traitement de cette base de donnée ne pouvait plus se faire au perceptron : le sujet de la photo n'est pas toujours pris selon le même angle, à la même distance etc. D'où notre idée d'étudier les réseaux à Convolution, dont on parlera plus tard . //
 
 % Fin du chapitre, les autres améliorations seront dans d'autres chapitres.
