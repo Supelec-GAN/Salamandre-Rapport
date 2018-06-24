@@ -83,5 +83,14 @@ Pour pallier à cela, on considère $\widehat{m_k}$ et $\widehat{v_k}$ :
 On met à jour les poids avec :
 \[\Delta W_k = -\frac{\eta}{\sqrt{\widehat{v_k}}+\epsilon}*\widehat{m_k}\]
 
+\subsection{Comparaison des algorithmes sur MNIST}
+
+	Sur la figure \ref{fig:comp_algos}, on voit que ces algorithmes améliorent le résultat sur MNIST autant en précision qu'en vitesse de convergence par rapport à l'algorithme de descente de gradient classique. Le meilleur algorithme à utiliser est Adam avec $\eta = 0.01$, $\gamma_1=0.9$ et $\gamma_2 = 0.999$ comme paramètres. Cependant, comme l'a étudié le groupe Couleuvre, il peut être avantageux d'utiliser deux algorithmes différents sur le générateur et le discriminateur. En effet, utiliser Adam sur le générateur et RMSProp sur le discriminateur permet de "ralentir" le discriminateur qui a tendance à devenir meilleur que le générateur. 
+	
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{fig/comparaisonAlgos.png}
+  \label{fig:comp_algos}
+\end{figure}
+
 \section{Réseaux à convolution: DCGAN}
 
