@@ -210,9 +210,9 @@ En figure \ref{fig:resultat5}, des résultats obtenus sans Collapse, la solution
   \label{fig:tableauDeChasse}
 \end{figure}
 \section{Autres problèmes rencontrés } 
-Comme mentionné plus haut, il nous a été très difficile de savoir dans quel direction progresser.\\
+Comme mentionné plus haut, il nous a été très difficile de savoir dans quelle direction progresser.\\
 En effet, il n'existe pour l'instant aucune méthode fiable pour attribuer un "score de vraisemblance"  aux donnés générées par GAN. En l'état, la meilleure méthode suggérée par l'état de l'art consiste à demander à des humains si les chiffres qu'on leur présentait leur paraissaient vraisemblables ou non. L'expérience fut tentée par Goodfellow avec l'aide du captcha d'Amazon, mais même de tels moyens n'ont pas donné de résultats très satisfaisants (il se trouve que le sujet humain, à l'instar d'un Discriminateur, apprenait de ses erreurs et devenait trop bon trop vite ) . \\
-On a donc recherché un moyen d'évaluer nos résultats. Après qu'on nous ait suggéré des pistes sur le traitement d'images, nous nous sommes tournés vers le WGAN, dont on parlera plus tard , qui ne souffrait pas de telles difficultés. 
+On a donc recherché un moyen d'évaluer nos résultats. Après qu'on nous ait suggéré des pistes sur le traitement d'images, nous nous sommes tournés vers le WGAN, dont on parlera plus tard, qui ne souffrait pas de telles difficultés. 
 
 De plus, après un bref entretien avec Ian LeCun (au cours duquel nous avons constaté que nous butions sur des problèmes biens établis de la théorie du GAN), une autre piste d'amélioration a été proposée. \\
 D'après LeCun, la base de donnés Mnist était "trop binaire" (comprenez que l'on passe du blanc au noir trop rapidement dans l'image). Ainsi, le réseau n'était pas très enclin à fournir de la diversité (l'information se trouve dans ce pixel est pas dans celui juste à côté ). \\

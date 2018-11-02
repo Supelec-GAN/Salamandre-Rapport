@@ -95,4 +95,56 @@ On met à jour les poids avec :
 
 \section{Réseaux à convolution: DCGAN}
 
-Cette section sera remplie quand Romain finira par mettre sa partie du rapport en ligne.
+Les perceptrons ne tiennent pas compte du type de données en entrées. 
+Les réseaux à convolution sont eux plus adaptés au traitement d'images et à la reconnaissance de motifs.
+Nous avons donc essayer d'implémenter ce type de réseau.
+
+\subsection{Principe}
+Comme le nom l'indique, ces réseaux consistent à appliquer différentes convolutions de matrices sur les images afin d'extraire des motifs tels que des contours, des coins, des changements de couleurs, etc.
+\\
+Une image est dans ce type de réseau est de dimension $p \times n \times n$, avec $p$ le nombre de canaux (aussi appelé channels ou encore feature maps) de l'image.
+Le filtre d'une couche est de dimension $q \times p \times m \times m$, avec $p$ le nombre de canaux en entrée et $q$ le nombre de canaux en sortie.
+Un canal contient généralement un type d'information telles que les valeurs RVB de l'image, un contour, un motif, etc.
+\\
+Mathématiquement, on a alors l'équation de propagation suivante :
+\[x^{l}_{i,j}(k) = \sum^{p-1}_{r=0}{\sum^{m-1}_{a=0}{\sum^{m-1}_{b=0}{w_{a,b}^{l,r}y^{r}_{(i+a),(j+b)}(k-1)}}},\]
+où $l\in [0, q-1]$ et $(i,j)\in [0, n-m+1]^2$.
+\\
+On obtient alors les équations de rétropropagation suivantes :
+\[\frac{\partial E}{\partial w_{a,b}^{l,r}} = \sum^{n-m}_{i=0}{\sum^{n-m}_{j=0}{\frac{\partial E}{\partial x^{l}_{i,j}(k)}y^{r}_{(i+a),(j+b)}(k-1)}}\]
+\[\frac{\partial E}{\partial x_{i,j}^{l}(k)} = \frac{\partial E}{\partial y_{i,j}^{l}(k)}\sigma ' (x^{l}_{i,j}(k))\]
+\[\frac{\partial E}{\partial y_{i,j}^{l}(k-1)} = \sum^{q-1}_{r=0}\sum^{m-1}_{a=0}{\sum^{m-1}_{b=0}{\frac{\partial E}{\partial x^{r}_{(i-a),(j-b)}(k)}w^{r,l}_{a,b}(k)}} \]
+
+\subsection{Paramètres des convolutions}
+Nous avons vu qu'un filtre est défini par sa surface, et son nombre de canaux en sortie, l'image en entrée imposant les canaux en entrée.
+Le nombre de canaux en sortie permet de choisir le nombre de motifs que l'on veut que le réseau soit capable d'identifier.
+La surface du filtre permet d'influencer sur les motifs reconnus.
+On obtient alors un tenseur de poids pour la couche.
+Cependant, il existe d'autres paramètres configurables pour les couches à convolutions.
+Ainsi les strides et le zéro-padding sont des paramètres souvent utilisés.
+\begin{itemize}
+	\item Le zéro-padding consiste à ajouter des zéros autour de l'image.
+	Cela peut permettre de donner un peu plus d'importance aux bords de l'image, et permet aussi d'être moins restreint sur la dimension des canaux en sortie du filtre.
+	Les dimensions de l'image ne diminuent alors pas nécessairement.
+
+	\item Les strides consiste à faire varier le pas de déplacement du filtre sur l'image, qui vaut 1 par défaut.
+	Ce pas variable permet d'adapter la quantité d'information à calculer et à conserver.
+\end{itemize}
+Pour le choix de la fonction d'activation, la fonction ReLu, ou ses variations telles que PReLu ou LeakyReLu, est souvent conseillée. Cependant, il est nécessaire de mettre une couche de BatchNorm derrière une telle fonction, afin d'éviter que la sortie de la couche diverge trop fortement.
+\\
+De plus, une couche de pooling est généralement rajoutée après chaque couche de convolution.
+Ce pooling permet de concentrer l'information pour mieux l'extraire ensuite.
+Différents types de pooling existent tels que le max pooling ou la moyenne.
+
+\subsection{Implémentation}
+La mise en place des couches de convolutions a demandé un important travail de réorganisation du code malgré les efforts initiaux pour avoir une base souple et modulaire.
+Cette nouvelle implémentation s'inspirent de frameworks tels que TensorFlow, et permet d'enchainer n'importe quel type de couche.
+\\
+Cependant, bien que cette implémentation tourne à la fois pour les perceptrons classiques et les couches à convolutions, nous n'avons pas réussi à obtenir de résultats convaincants sur la base MNIST ou CIFAR10 avec ces nouvelles couches.
+Nous avons alors essayé de reproduire certains réseaux de la littérature, afin de comparer les résultats.
+Cependant les réseaux à reproduire étaient assez gros, et ne pouvaient pas terminer en temps raisonnable sur notre implémentation des convolutions qui n'était pas extrêmement optimisée et performante.
+De plus, ces réseaux utilisaient souvent des techniques d'apprentissage que nous n'avons pas, tel que le dropout.
+\\
+Ces différents éléments ne nous ont pas permis d'obtenir des résultats satisfaisants.
+ 
+
